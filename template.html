@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telecom Tower Battery TCO Model | CHAI Market Shaping</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <div class="brand-logo-container">
+          <img src="image.jpeg" onerror="this.src='data:image/jpeg;base64,__LOGO_B64__'" alt="CHAI Logo" class="chai-logo">
+        </div>
+        <div class="brand-text">
+          <h1>Telecom Tower Battery Total Cost of Ownership (TCO) Model</h1>
+          <p>Standard LAB vs Longer-Lasting LAB (IndusPower XL-Series) &bull; CHAI Market Shaping Practice</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="action-btn" id="btn-reset" title="Reset all inputs to base case">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+
+        <button type="button" class="action-btn" id="btn-export-csv" title="Download model data as CSV">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button type="button" class="action-btn primary" id="btn-print" title="Print report or export to PDF">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs (3 Main Sections) -->
+  <nav class="tab-nav">
+    <div class="tab-nav-inner">
+      <button type="button" class="tab-btn active" data-tab="tab-dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        TCO Modeling & Dashboard
+        <span class="tab-badge">Live</span>
+      </button>
+
+      <button type="button" class="tab-btn" data-tab="tab-sensitivity">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+        Sensitivity & Scenarios
+      </button>
+
+      <button type="button" class="tab-btn" data-tab="tab-assumptions">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+        Assumptions Section
+      </button>
+    </div>
+  </nav>
+
+  <!-- Presets Toolbar (Positioned below the 3 tabs, hidden on Assumptions tab) -->
+  <div id="preset-bar" class="preset-bar">
+    <div class="preset-bar-inner">
+      <span class="preset-label">Quick Scenarios:</span>
+      <button type="button" class="preset-btn active" data-preset="base">Base Case (36m)</button>
+      <button type="button" class="preset-btn" data-preset="pessimistic">Pessimistic Case</button>
+      <button type="button" class="preset-btn" data-preset="optimistic">Optimistic Case</button>
+      <button type="button" class="preset-btn" data-preset="rajasthan">Heat Stress (Rajasthan)</button>
+      <button type="button" class="preset-btn" data-preset="mp">Cooler Climate (MP)</button>
+      <button type="button" class="preset-btn" data-preset="cfo_strict">Zero Scrap Credit</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="app-main">
+
+    <!-- TAB 1: TCO MODELING & DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="engine-layout">
+        
+        <!-- Left: Input Controls -->
+        <aside class="card card-control-panel">
+          <div class="card-header">
+            <h2>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Model Variables
+            </h2>
+            <p>Live Parameter Tuning</p>
+          </div>
+
+          <div class="card-body">
+            
+            <!-- Towers in Scope -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Towers in Scope</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-t-num" class="control-val-input" value="10000" min="500" max="30000" step="500">
+                  <span class="control-unit">towers</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-t-range" min="1000" max="28000" step="500" value="10000">
+                <div class="range-bounds"><span>1,000</span><span>Base: 10,000</span><span>28,000</span></div>
+              </div>
+              <div class="control-hint">Scale of towers evaluated across the operator footprint.</div>
+            </div>
+
+            <!-- Batteries per Tower (N) -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Batteries per Tower</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-n-num" class="control-val-input" value="6" min="4" max="8" step="1">
+                  <span class="control-unit">units</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-n-range" min="4" max="8" step="1" value="6">
+                <div class="range-bounds"><span>4 (2G/3G)</span><span>Base: 6</span><span>8 (4G Heavy)</span></div>
+              </div>
+              <div class="control-hint">4 units on 2G/3G sites, 6 to 8 units on 4G sites.</div>
+            </div>
+
+            <!-- Standard LAB Unit Price -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Standard LAB Unit Price</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-p-std-num" class="control-val-input" value="14000" min="12000" max="16000" step="250">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-p-std-range" min="12000" max="16000" step="250" value="14000">
+                <div class="range-bounds"><span>₹13,000</span><span>Base: ₹14,000</span><span>₹15,000</span></div>
+              </div>
+              <div class="control-hint">Standard market price for 150Ah VRLA battery units.</div>
+            </div>
+
+            <!-- XL-Series Unit Price -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">XL-Series Unit Price</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-p-xl-num" class="control-val-input" value="17200" min="15000" max="22000" step="100">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-p-xl-range" min="15000" max="22000" step="100" value="17200">
+                <div class="range-bounds"><span>₹17,200 (Bulk 5k+)</span><span>List: ₹18,500</span><span>₹22,000</span></div>
+              </div>
+              <div class="control-hint">Bulk discount price for 5,000+ units (₹18,500 list price).</div>
+            </div>
+
+            <!-- Standard Battery Life -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Standard Battery Life</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-life-std-num" class="control-val-input" value="20" min="14" max="30" step="1">
+                  <span class="control-unit">months</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-life-std-range" min="14" max="30" step="1" value="20">
+                <div class="range-bounds"><span>18m (High Heat)</span><span>Base: 20m</span><span>26m (Cooler)</span></div>
+              </div>
+              <div class="control-hint">Observed life in hot climates (Rajasthan/Gujarat) before replacement.</div>
+            </div>
+
+            <!-- XL-Series Battery Life -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">XL-Series Battery Life</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-life-xl-num" class="control-val-input" value="36" min="20" max="60" step="1">
+                  <span class="control-unit">months</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-life-xl-range" min="20" max="60" step="1" value="36">
+                <div class="range-bounds"><span>24m (Low bound)</span><span>Base: 36m (Haircut)</span><span>54m (Claim)</span></div>
+              </div>
+              <div class="control-hint">Assumed field life with conservative 1/3 haircut on vendor claim.</div>
+            </div>
+
+            <!-- Replacement Visit Cost -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Replacement Visit Cost</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-c-visit-num" class="control-val-input" value="3250" min="2000" max="5000" step="250">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-c-visit-range" min="2000" max="5000" step="250" value="3250">
+                <div class="range-bounds"><span>₹2,500</span><span>Base: ₹3,250</span><span>₹4,000</span></div>
+              </div>
+              <div class="control-hint">All-in cost per visit for technician time, transport, and equipment.</div>
+            </div>
+
+            <!-- Scrap Value per Battery -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Scrap Value per Battery</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-s-num" class="control-val-input" value="350" min="200" max="500" step="25">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-s-range" min="200" max="500" step="25" value="350">
+                <div class="range-bounds"><span>₹200</span><span>Base: ₹350</span><span>₹500</span></div>
+              </div>
+              <div class="control-hint">Cash paid by scrap collectors per spent battery unit.</div>
+            </div>
+
+            <!-- Scrap Credit Toggle -->
+            <div class="toggle-wrap">
+              <div>
+                <span class="control-label">Include Scrap Credit</span>
+                <div class="control-hint">Credits scrap income against replacement cost.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggle-scrap" checked>
+                <span class="slider-round"></span>
+              </label>
+            </div>
+
+          </div>
+        </aside>
+
+        <!-- Right: Dashboard & Visuals -->
+        <section class="dashboard-main">
+          
+          <!-- Live Verdict Banner -->
+          <div id="verdict-banner" class="verdict-banner success">
+            <div class="verdict-main">
+              <div id="verdict-icon" class="verdict-icon">&#10003;</div>
+              <div>
+                <div id="verdict-title" class="verdict-title">XL-Series Cheaper: Saves ₹16,307 per tower/year</div>
+                <div id="verdict-subtitle" class="verdict-subtitle">Annual fleet saving of ₹16.31 Cr across 10,000 towers (31.9% cost reduction). Break-even life is 24.5 months (safety cushion: 11.5 months).</div>
+              </div>
+            </div>
+            <div id="verdict-pill" class="verdict-pill">XL CHEAPER</div>
+          </div>
+
+          <!-- Top KPI Cards Grid -->
+          <div class="kpi-grid">
+            
+            <div class="kpi-card">
+              <span class="kpi-label">Standard LAB: Cost / Tower</span>
+              <span id="kpi-std-tco" class="kpi-value">₹51,090/yr</span>
+              <span class="kpi-sub">Baseline VRLA (20m life)</span>
+            </div>
+
+            <div class="kpi-card highlight">
+              <span class="kpi-label">XL-Series: Cost / Tower</span>
+              <span id="kpi-xl-tco" class="kpi-value">₹34,783/yr</span>
+              <span class="kpi-sub">Extended-life (36m haircut life)</span>
+            </div>
+
+            <div id="card-saving-tower" class="kpi-card positive">
+              <span class="kpi-label">Annual Saving / Tower</span>
+              <span id="kpi-saving-tower" class="kpi-value">+₹16,307/yr</span>
+              <span id="kpi-saving-pct" class="kpi-sub">+31.9% cost reduction</span>
+            </div>
+
+            <div id="card-saving-fleet" class="kpi-card positive">
+              <span class="kpi-label">Annual Saving: 10,000 Towers</span>
+              <span id="kpi-saving-fleet" class="kpi-value">+₹16.31 Cr/yr</span>
+              <span class="kpi-sub">Total procurement saving</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Extra Year-1 Capex (10k Twrs)</span>
+              <span id="kpi-capex-hurdle" class="kpi-value">+₹19.20 Cr</span>
+              <span id="kpi-capex-sub" class="kpi-sub">+₹19,200/tower initial outlay</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Simple Capex Payback</span>
+              <span id="kpi-payback" class="kpi-value">1.18 Yrs (14.1 Mos)</span>
+              <span class="kpi-sub">Capex recouped via lower opex</span>
+            </div>
+
+          </div>
+
+          <!-- Separate Breakeven Callout Cards: CAPEX vs Overall Expenditure -->
+          <div class="breakeven-callout-grid">
+            
+            <!-- Card A: CAPEX Breakeven -->
+            <div class="breakeven-card capex">
+              <div class="breakeven-title">
+                <span>CAPEX Breakeven (Upfront Payback Period)</span>
+                <span class="breakeven-badge">Initial Outlay</span>
+              </div>
+              <div id="be-capex-payback-main" class="breakeven-main-stat">1.18 Years (14.1 Months)</div>
+              <div class="breakeven-desc">
+                Measures how quickly the recurring annual operational savings recover the higher upfront equipment investment.
+              </div>
+              <div class="breakeven-metrics">
+                <div>
+                  <div class="breakeven-metric-label">Extra Upfront Capex</div>
+                  <div id="be-capex-outlay-twr" class="breakeven-metric-val">+₹19,200 / tower</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Fleet Extra Outlay</div>
+                  <div id="be-capex-outlay-flt" class="breakeven-metric-val">+₹19.20 Crore</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Annual OPEX Savings</div>
+                  <div id="be-capex-annual-save" class="breakeven-metric-val">₹16,307 / tower/yr</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Payback Status</div>
+                  <div class="breakeven-metric-val" style="color:var(--color-saving);">Fully Recovered in Year 2</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card B: Overall Expenditure Breakeven -->
+            <div class="breakeven-card overall">
+              <div class="breakeven-title">
+                <span>Overall Expenditure Breakeven (TCO Crossover)</span>
+                <span class="breakeven-badge">Full Lifecycle</span>
+              </div>
+              <div id="be-overall-life-main" class="breakeven-main-stat">24.5 Months</div>
+              <div class="breakeven-desc">
+                Measures the minimum lifespan and maximum price thresholds at which the total lifecycle cost of XL matches standard batteries.
+              </div>
+              <div class="breakeven-metrics">
+                <div>
+                  <div class="breakeven-metric-label">Required Breakeven Life</div>
+                  <div id="be-overall-life-margin" class="breakeven-metric-val">+11.5 Months cushion</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Maximum Unit Price</div>
+                  <div id="be-overall-price-main" class="breakeven-metric-val">₹25,353 / unit</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Max Allowable Premium</div>
+                  <div id="be-overall-prem-main" class="breakeven-metric-val">+81.1% (Quoted: +22.9%)</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Overall Expenditure</div>
+                  <div class="breakeven-metric-val" style="color:var(--color-xl);">31.9% Lower TCO</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="charts-grid">
+            
+            <!-- Chart 1: Cost per Tower Breakdown -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span class="chart-title">Annual Battery Cost per Tower</span>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#059669;"></span> Annual Saving</span>
+                </div>
+              </div>
+              <div id="chart-cost-breakdown" class="svg-chart-container"></div>
+            </div>
+
+            <!-- Chart 2: 5-Year Cumulative Outflow -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span class="chart-title">5-Year Cumulative Outflow per Tower</span>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#d97706;"></span> Break-Even</span>
+                </div>
+              </div>
+              <div id="chart-payback-curve" class="svg-chart-container"></div>
+            </div>
+
+          </div>
+
+          <!-- Chart 3: Lifespan Crossover Sensitivity Curve -->
+          <div class="chart-card" style="margin-bottom: 20px;">
+            <div class="chart-header">
+              <div>
+                <span class="chart-title">TCO Crossover Curve: Annual Cost vs XL Lifespan</span>
+                <p style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">Shows how annual cost per tower falls as battery lifespan increases. The crossover point (24.5 months) is where XL becomes cheaper than standard.</p>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB Benchmark</span>
+                <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series Curve</span>
+                <span class="legend-item"><span class="legend-color" style="background:#d97706;"></span> Break-Even Life (24.5m)</span>
+                <span class="legend-item"><span class="legend-color" style="background:#059669;"></span> Base Assumption (36m)</span>
+              </div>
+            </div>
+            <div id="chart-crossover-curve" class="svg-chart-container" style="height: 220px;"></div>
+          </div>
+
+          <!-- Table: 5 Columns, Note column removed as requested -->
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                TCO Model: Cost per Tower per Year
+              </h2>
+              <p>Financial Comparison</p>
+            </div>
+            
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Line Item</th>
+                    <th>Unit</th>
+                    <th>Standard LAB</th>
+                    <th>IndusPower XL-Series</th>
+                    <th>Variance / Delta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Unit Price</strong></td>
+                    <td>INR / unit</td>
+                    <td id="tbl-p-std" class="num">₹14,000</td>
+                    <td id="tbl-p-xl" class="num">₹17,200</td>
+                    <td id="tbl-p-delta" class="num">+₹3,200 (+22.9%)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Batteries per Tower</strong></td>
+                    <td>units</td>
+                    <td id="tbl-n-std" class="num">6</td>
+                    <td id="tbl-n-xl" class="num">6</td>
+                    <td class="num">0</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Battery Life</strong></td>
+                    <td>months</td>
+                    <td id="tbl-life-std" class="num">20 mos</td>
+                    <td id="tbl-life-xl" class="num">36 mos</td>
+                    <td id="tbl-life-delta" class="num">+16 mos (+80%)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Replacement Cycles per Year</strong></td>
+                    <td>cycles / yr</td>
+                    <td id="tbl-freq-std" class="num">0.60 /yr</td>
+                    <td id="tbl-freq-xl" class="num">0.33 /yr</td>
+                    <td id="tbl-freq-delta" class="num">-0.27 /yr</td>
+                  </tr>
+                  <tr>
+                    <td>Battery Purchase per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-bat-std" class="num">₹84,000</td>
+                    <td id="tbl-bat-xl" class="num">₹1,03,200</td>
+                    <td class="num">+₹19,200</td>
+                  </tr>
+                  <tr>
+                    <td>Replacement Visit per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-vis-std" class="num">₹3,250</td>
+                    <td id="tbl-vis-xl" class="num">₹3,250</td>
+                    <td class="num">₹0</td>
+                  </tr>
+                  <tr>
+                    <td>Scrap Credit per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-scr-std" class="num">-₹2,100</td>
+                    <td id="tbl-scr-xl" class="num">-₹2,100</td>
+                    <td class="num">₹0</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td><strong>Cost per Replacement Cycle</strong></td>
+                    <td>INR</td>
+                    <td id="tbl-cyc-std" class="num">₹85,150</td>
+                    <td id="tbl-cyc-xl" class="num">₹1,04,350</td>
+                    <td id="tbl-cyc-delta" class="num">+₹19,200</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>Annual TCO per Tower</strong></td>
+                    <td>INR / twr / yr</td>
+                    <td id="tbl-tco-std" class="num">₹51,090</td>
+                    <td id="tbl-tco-xl" class="num">₹34,783</td>
+                    <td id="tbl-tco-delta" class="num">-₹16,307 (-31.9%)</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td><strong>Annual TCO, 10,000 Towers</strong></td>
+                    <td>INR Crore / yr</td>
+                    <td id="tbl-flt-std" class="num">₹51.09 Cr</td>
+                    <td id="tbl-flt-xl" class="num">₹34.78 Cr</td>
+                    <td id="tbl-flt-delta" class="num" style="color:#059669; font-weight:700;">+₹16.31 Cr / yr</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Extra Year-1 Capex, 10,000 Towers</strong></td>
+                    <td>INR Crore</td>
+                    <td class="num">₹84.00 Cr</td>
+                    <td class="num">₹103.20 Cr</td>
+                    <td id="tbl-cfo-capex" class="num" style="color:#dc2626; font-weight:700;">+₹19.20 Cr</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 2: SENSITIVITY & SCENARIOS -->
+    <div id="tab-sensitivity" class="tab-content">
+      
+      <!-- Explicit Callout of the Least Confident Variables -->
+      <div class="uncertainty-box">
+        <div class="uncertainty-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Key Model Uncertainties: The Two Least Confident Variables
+        </div>
+        <div class="uncertainty-grid">
+          <div class="uncertainty-item">
+            <strong>1. Effective Battery Lifespan in Field Conditions (Base: 36 Months)</strong>
+            The supplier claims a 48 to 60 month lifespan based on 1,200 cycles in controlled conditions. However, high ambient temperatures above 40&deg;C in states like Rajasthan and Gujarat degrade batteries significantly faster than laboratory ratings. Our model applies a conservative one-third haircut down to 36 months, but full real-world lifespan data is not yet proven.
+          </div>
+          <div class="uncertainty-item">
+            <strong>2. Number of Batteries per Tower (Base: 6 Units)</strong>
+            Tower configurations vary widely across networks: 2G/3G sites typically use 4 battery units, while heavier 4G sites use 6 to 8 units. The exact string size across the operator's fleet is unconfirmed. While this variable scales the total rupee savings, our sensitivity analysis proves it does not alter the break-even lifespan threshold.
+          </div>
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 1 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 1: Battery Lifespan vs Batteries per Tower</div>
+            <div class="heatmap-legend">
+              <span class="legend-item"><span class="heat-swatch heat-deep-pos"></span> Large Saving</span>
+              <span class="legend-item"><span class="heat-swatch heat-sub-pos"></span> Positive Saving</span>
+              <span class="legend-item"><span class="heat-swatch heat-neutral"></span> Break-Even</span>
+              <span class="legend-item"><span class="heat-swatch heat-low-neg"></span> Standard Cheaper</span>
+            </div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Evaluates the annual procurement saving per tower (INR) across varying battery lifespans (rows) and string configurations (columns), keeping unit prices at base values (₹14,000 standard vs ₹17,200 XL). Positive green numbers indicate the longer-lasting battery is cheaper; negative red numbers indicate standard batteries are cheaper.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">XL Battery Life &darr; | Batteries per Tower &rarr;</th>
+                <th>4 units (2G/3G)</th>
+                <th>5 units</th>
+                <th>6 units (Base)</th>
+                <th>7 units</th>
+                <th>8 units (4G Heavy)</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap1-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> Across all battery string configurations (4 to 8 units), the break-even point remains stable between 24.4 and 24.7 months. The number of batteries per tower changes the total rupee amount saved, but does not alter whether switching is financially viable.
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 2 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 2: Battery Lifespan vs Purchase Price of Longer-Lasting Battery</div>
+            <div class="heatmap-legend">
+              <span class="legend-item"><span class="heat-swatch heat-deep-pos"></span> XL Cheaper</span>
+              <span class="legend-item"><span class="heat-swatch heat-neutral"></span> Break-Even</span>
+              <span class="legend-item"><span class="heat-swatch heat-deep-neg"></span> Standard Cheaper</span>
+            </div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Tests the price tolerance of the longer-lasting battery (columns) across different lifespan outcomes (rows), assuming 6 batteries per tower and a standard battery price of ₹14,000.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">XL Battery Life &darr; | XL Unit Price &rarr;</th>
+                <th>₹15,000</th>
+                <th>₹16,000</th>
+                <th>₹17,200 (Bulk Quote)</th>
+                <th>₹18,500 (List Price)</th>
+                <th>₹20,000</th>
+                <th>₹22,000</th>
+                <th>₹25,000</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap2-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> At our conservative base assumption of 36 months, the longer-lasting battery remains cheaper even if the supplier refuses discounts and charges the full ₹18,500 list price (saving ₹13,707 per tower/year). The battery remains cost-effective up to ₹25,353 per unit.
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 3 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 3: Operating Climate (Standard Life) vs Longer-Lasting Battery Life</div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Compares standard battery lifespan across different operating climates (rows)—from hot clusters like Rajasthan and Gujarat (18 to 20 months) to cooler states like Madhya Pradesh (24 to 26 months)—against varying longer-lasting battery lifespans (columns).
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">Standard Life (Climate Zone) &darr; | XL Battery Life &rarr;</th>
+                <th>24 months</th>
+                <th>30 months</th>
+                <th>36 months (Base)</th>
+                <th>42 months</th>
+                <th>48 months</th>
+                <th>54 months</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap3-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> Financial savings are greatest in high-temperature regions where standard batteries fail rapidly (saving ₹16,307 to ₹21,983 per tower). In cooler regions where standard batteries last 26 months, savings are narrower (₹4,517 per tower), showing that tower operators should prioritize high-heat clusters for initial deployment.
+        </div>
+      </div>
+
+      <!-- Scenarios Table -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Outer Bounds Scenario Comparison
+          </h2>
+          <p>Worst-Case vs Base Case vs Best-Case Financial Outcomes</p>
+        </div>
+        
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model Input / Output Metric</th>
+                <th>Pessimistic Case (Adverse Bounds)</th>
+                <th>Base Case Assumption</th>
+                <th>Optimistic Case (Favorable Bounds)</th>
+                <th>Active Live Settings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Batteries per Tower</td>
+                <td>4 units</td>
+                <td>6 units</td>
+                <td>8 units</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Standard Battery Unit Price</td>
+                <td>₹13,000</td>
+                <td>₹14,000</td>
+                <td>₹15,000</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>XL-Series Battery Unit Price</td>
+                <td>₹18,500 (List)</td>
+                <td>₹17,200 (Bulk)</td>
+                <td>₹17,200 (Bulk)</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Standard Battery Lifespan</td>
+                <td>24 months</td>
+                <td>20 months</td>
+                <td>18 months</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>XL-Series Battery Lifespan</td>
+                <td>24 months</td>
+                <td>36 months</td>
+                <td>54 months</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Replacement Visit Cost</td>
+                <td>₹2,500</td>
+                <td>₹3,250</td>
+                <td>₹4,000</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Annual Cost per Tower: Standard</strong></td>
+                <td id="scen-pess-tco-std">₹26,450</td>
+                <td id="scen-base-tco-std">₹51,090</td>
+                <td id="scen-opt-tco-std">₹81,067</td>
+                <td id="scen-curr-tco-std">₹51,090</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Annual Cost per Tower: XL-Series</strong></td>
+                <td id="scen-pess-tco-xl">₹37,450</td>
+                <td id="scen-base-tco-xl">₹34,783</td>
+                <td id="scen-opt-tco-xl">₹30,933</td>
+                <td id="scen-curr-tco-xl">₹34,783</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Annual Saving per Tower</strong></td>
+                <td id="scen-pess-sav-twr" style="color:#dc2626;">-₹11,000</td>
+                <td id="scen-base-sav-twr" style="color:#059669;">+₹16,307</td>
+                <td id="scen-opt-sav-twr" style="color:#059669;">+₹50,133</td>
+                <td id="scen-curr-sav-twr">+₹16,307</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Fleet Annual Saving: 10,000 Towers</strong></td>
+                <td id="scen-pess-sav-flt" style="color:#dc2626;">-₹11.00 Cr / yr</td>
+                <td id="scen-base-sav-flt" style="color:#059669;">+₹16.31 Cr / yr</td>
+                <td id="scen-opt-sav-flt" style="color:#059669;">+₹50.13 Cr / yr</td>
+                <td id="scen-curr-sav-flt">+₹16.31 Cr / yr</td>
+              </tr>
+              <tr>
+                <td>Extra Year-1 Capex (10,000 Towers)</td>
+                <td id="scen-pess-capex">+₹22.00 Cr</td>
+                <td id="scen-base-capex">+₹19.20 Cr</td>
+                <td id="scen-opt-capex">+₹17.60 Cr</td>
+                <td id="scen-curr-capex">+₹19.20 Cr</td>
+              </tr>
+              <tr>
+                <td>XL Lifespan Needed to Break Even</td>
+                <td id="scen-pess-be">33.98 months</td>
+                <td id="scen-base-be">24.51 months</td>
+                <td id="scen-opt-be">20.61 months</td>
+                <td id="scen-curr-be">24.51 months</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Financial Verdict</strong></td>
+                <td id="scen-pess-verdict" style="color:#dc2626;">Standard Cheaper</td>
+                <td id="scen-base-verdict" style="color:#059669;">XL Cheaper</td>
+                <td id="scen-opt-verdict" style="color:#059669;">XL Cheaper</td>
+                <td id="scen-curr-verdict" style="color:#059669;">XL Cheaper</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- TAB 3: ASSUMPTIONS SECTION -->
+    <div id="tab-assumptions" class="tab-content">
+      
+      <!-- Table 1: Model Input Assumptions (Plain English sentences, no source/confidence/notes) -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Model Input Variables
+          </h2>
+          <p>Core Model Parameters</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Assumption</th>
+                <th>Unit</th>
+                <th>Base Case</th>
+                <th>Low Range</th>
+                <th>High Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="plain-sentence-cell">The telecom tower operator manages an evaluation fleet of 10,000 towers.</td>
+                <td>towers</td>
+                <td class="num">10,000</td>
+                <td class="num">10,000</td>
+                <td class="num">10,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">Each telecom tower site operates with 6 battery units in its backup power string.</td>
+                <td>units/tower</td>
+                <td class="num">6</td>
+                <td class="num">4</td>
+                <td class="num">8</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The unit purchase price for a standard 150Ah lead-acid battery is ₹14,000.</td>
+                <td>INR/unit</td>
+                <td class="num">14,000</td>
+                <td class="num">13,000</td>
+                <td class="num">15,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The unit purchase price for an extended-life XL-Series battery is ₹17,200 for orders of 5,000 or more units.</td>
+                <td>INR/unit</td>
+                <td class="num">17,200</td>
+                <td class="num">17,200</td>
+                <td class="num">18,500</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">A standard battery operating in high-temperature regions lasts an average of 20 months before needing replacement.</td>
+                <td>months</td>
+                <td class="num">20</td>
+                <td class="num">18</td>
+                <td class="num">24</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">An extended-life XL-Series battery is assumed to achieve an effective lifespan of 36 months under Indian field conditions.</td>
+                <td>months</td>
+                <td class="num">36</td>
+                <td class="num">24</td>
+                <td class="num">54</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The all-in cost for a field technician visit to replace batteries is ₹3,250 per tower visit.</td>
+                <td>INR/visit</td>
+                <td class="num">3,250</td>
+                <td class="num">2,500</td>
+                <td class="num">4,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The cash scrap value received from collectors for each spent battery replaced at the site is ₹350.</td>
+                <td>INR/unit</td>
+                <td class="num">350</td>
+                <td class="num">300</td>
+                <td class="num">400</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">Scrap value income is included as an operational cash credit that reduces net replacement expenses.</td>
+                <td>flag</td>
+                <td class="num">Yes (1)</td>
+                <td class="num">No (0)</td>
+                <td class="num">Yes (1)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table 2: Operational / Structural Assumptions (Plain English sentences only) -->
+      <div class="card">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Operational Assumptions
+          </h2>
+          <p>Structural Modeling Rules</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Operational Assumption</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;">1</td>
+                <td class="plain-sentence-cell">All battery units at a tower site are replaced together in a single technician visit at the end of each operating cycle.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">2</td>
+                <td class="plain-sentence-cell">Batteries are replaced when usable capacity drops below the operator's working threshold, which is identical for both options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">3</td>
+                <td class="plain-sentence-cell">Financial figures are evaluated on a nominal annual basis without general price inflation or discounting.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">4</td>
+                <td class="plain-sentence-cell">Scrap income is earned for every replaced battery unit and is identical per unit for both battery options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">5</td>
+                <td class="plain-sentence-cell">Technician labor, transport, and equipment costs per replacement visit are identical for installing both types of batteries.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">6</td>
+                <td class="plain-sentence-cell">Batteries are assumed to achieve their stated operating life on average without premature random cell failures.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">7</td>
+                <td class="plain-sentence-cell">Both battery types have a 150Ah capacity rating and deliver equivalent usable power backup to the telecom tower.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">8</td>
+                <td class="plain-sentence-cell">Environmental and health impacts from battery recycling are excluded to keep the financial evaluation strictly focused on procurement costs.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">9</td>
+                <td class="plain-sentence-cell">Taxes, freight, and standard installation are excluded from the model and assumed equal across both battery options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">10</td>
+                <td class="plain-sentence-cell">The standard battery lifespan of 20 months in high-temperature regions is applied across the evaluation fleet.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">11</td>
+                <td class="plain-sentence-cell">The bulk purchase price of ₹17,200 applies to the full 10,000-tower deployment because total order volume exceeds 5,000 units.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">12</td>
+                <td class="plain-sentence-cell">Performance data from ongoing field deployments is not used to adjust the baseline lifespan assumption until complete failure data is available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

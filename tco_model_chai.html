@@ -1,0 +1,2946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telecom Tower Battery TCO Model | CHAI Market Shaping</title>
+  <style>
+/* CHAI Telecom Tower Battery TCO Model - Stylesheet */
+:root {
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  --color-std: #475569;        /* Standard LAB: Slate Gray */
+  --color-xl: #0284c7;         /* XL-Series: Blue */
+  --color-saving: #059669;     /* Savings / Favorable: Green */
+  --color-adverse: #dc2626;    /* Extra Cost / Adverse: Red */
+  --color-crossover: #d97706;  /* Break-even Crossover: Amber */
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--slate-50);
+  color: var(--slate-800);
+  line-height: 1.5;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header */
+header.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--slate-200);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.chai-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-text h1 {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--slate-900);
+  line-height: 1.25;
+}
+
+.brand-text p {
+  font-size: 11.5px;
+  color: var(--slate-500);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid var(--slate-300);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate-700);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 32px;
+}
+
+.action-btn:hover {
+  background: var(--slate-50);
+  color: var(--slate-900);
+  border-color: var(--slate-400);
+}
+
+.action-btn.primary {
+  background: var(--color-xl);
+  border-color: var(--color-xl);
+  color: #ffffff;
+}
+
+.action-btn.primary:hover {
+  background: #0369a1;
+}
+
+/* Tabs Navigation */
+nav.tab-nav {
+  background: #ffffff;
+  border-bottom: 1px solid var(--slate-200);
+  padding: 0 24px;
+}
+
+.tab-nav-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tab-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-600);
+  padding: 12px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-btn:hover {
+  color: var(--slate-900);
+  border-bottom-color: var(--slate-300);
+}
+
+.tab-btn.active {
+  color: var(--color-xl);
+  border-bottom-color: var(--color-xl);
+  font-weight: 600;
+}
+
+.tab-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--slate-100);
+  color: var(--slate-600);
+}
+
+.tab-btn.active .tab-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* Preset Toolbar Below Tabs */
+.preset-bar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--slate-200);
+  padding: 8px 24px;
+}
+
+.preset-bar-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.preset-bar-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.preset-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  margin-right: 4px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.preset-btn {
+  background: var(--slate-100);
+  border: 1px solid var(--slate-200);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--slate-700);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.preset-btn:hover {
+  background: #ffffff;
+  color: var(--slate-900);
+  border-color: var(--slate-300);
+}
+
+.preset-btn.active {
+  background: #ffffff;
+  color: var(--color-xl);
+  border-color: var(--color-xl);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Main Container */
+main.app-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Engine Layout */
+.engine-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+}
+
+.card-header h2 {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--slate-900);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-header p {
+  font-size: 11.5px;
+  color: var(--slate-500);
+}
+
+.card-body {
+  padding: 16px;
+}
+
+/* Controls */
+.control-group {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.control-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.control-val-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.control-val-input {
+  width: 80px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-900);
+  padding: 3px 6px;
+  border: 1px solid var(--slate-300);
+  border-radius: var(--radius-sm);
+  text-align: right;
+  background: var(--slate-50);
+}
+
+.control-val-input:focus {
+  outline: none;
+  border-color: var(--color-xl);
+  background: #ffffff;
+}
+
+.control-unit {
+  font-size: 11.5px;
+  color: var(--slate-500);
+  min-width: 32px;
+}
+
+.range-wrap {
+  position: relative;
+  margin-top: 4px;
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--slate-200);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-xl);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+.range-bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--slate-400);
+  margin-top: 3px;
+}
+
+.control-hint {
+  font-size: 11px;
+  color: var(--slate-500);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+/* Switch */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-round {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--slate-300);
+  transition: .2s;
+  border-radius: 20px;
+}
+
+.slider-round:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .2s;
+  border-radius: 50%;
+}
+
+input:checked + .slider-round {
+  background-color: var(--color-xl);
+}
+
+input:checked + .slider-round:before {
+  transform: translateX(18px);
+}
+
+/* Verdict Banner */
+.verdict-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-left: 5px solid transparent;
+}
+
+.verdict-banner.success {
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
+  border-left: 5px solid var(--color-saving);
+}
+
+.verdict-banner.danger {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-left: 5px solid var(--color-adverse);
+}
+
+.verdict-banner.warning {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-left: 5px solid var(--color-crossover);
+}
+
+.verdict-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verdict-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.verdict-banner.success .verdict-icon {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.verdict-banner.danger .verdict-icon {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.verdict-banner.warning .verdict-icon {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.verdict-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.verdict-subtitle {
+  font-size: 11.5px;
+  color: var(--slate-600);
+  margin-top: 1px;
+}
+
+.verdict-pill {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.verdict-banner.success .verdict-pill {
+  background: var(--color-saving);
+  color: #ffffff;
+}
+
+.verdict-banner.danger .verdict-pill {
+  background: var(--color-adverse);
+  color: #ffffff;
+}
+
+.verdict-banner.warning .verdict-pill {
+  background: var(--color-crossover);
+  color: #ffffff;
+}
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kpi-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--slate-500);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.kpi-value {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--slate-900);
+  letter-spacing: -0.01em;
+}
+
+.kpi-sub {
+  font-size: 10.5px;
+  color: var(--slate-500);
+  margin-top: 3px;
+}
+
+.kpi-card.highlight {
+  border-color: var(--color-xl);
+}
+
+.kpi-card.highlight .kpi-value {
+  color: var(--color-xl);
+}
+
+.kpi-card.positive {
+  border-color: var(--color-saving);
+}
+
+.kpi-card.positive .kpi-value {
+  color: var(--color-saving);
+}
+
+.kpi-card.negative {
+  border-color: var(--color-adverse);
+}
+
+.kpi-card.negative .kpi-value {
+  color: var(--color-adverse);
+}
+
+/* Separate Breakeven Callout Cards */
+.breakeven-callout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.breakeven-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.breakeven-card.capex {
+  border-left: 5px solid var(--color-crossover);
+  background: #fffdfa;
+}
+
+.breakeven-card.overall {
+  border-left: 5px solid var(--color-xl);
+  background: #f0f9ff;
+}
+
+.breakeven-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.breakeven-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.breakeven-card.capex .breakeven-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.breakeven-card.overall .breakeven-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.breakeven-main-stat {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 2px;
+}
+
+.breakeven-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.breakeven-metric-label {
+  font-size: 10.5px;
+  color: var(--slate-500);
+}
+
+.breakeven-metric-val {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.breakeven-desc {
+  font-size: 11px;
+  color: var(--slate-600);
+  line-height: 1.35;
+  margin-top: 6px;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.chart-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chart-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.chart-legend {
+  display: flex;
+  gap: 8px;
+  font-size: 10.5px;
+  color: var(--slate-600);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.svg-chart-container {
+  width: 100%;
+  height: 220px;
+  position: relative;
+}
+
+.svg-chart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Data Table */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-200);
+  background: #ffffff;
+}
+
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+  min-width: 520px;
+}
+
+table.data-table th {
+  background: var(--slate-100);
+  color: var(--slate-700);
+  font-weight: 600;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--slate-200);
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+table.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--slate-700);
+}
+
+table.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.data-table tr.total-row {
+  background: var(--slate-50);
+  font-weight: 700;
+  color: var(--slate-900);
+  border-top: 2px solid var(--slate-200);
+}
+
+table.data-table tr.highlight-row {
+  background: #f0f9ff;
+  font-weight: 700;
+  color: #0369a1;
+}
+
+table.data-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Sensitivity Section Styles */
+.uncertainty-box {
+  background: #fffdf5;
+  border: 1px solid #fef3c7;
+  border-left: 5px solid var(--color-crossover);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.uncertainty-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uncertainty-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  font-size: 12px;
+  color: #78350f;
+  line-height: 1.4;
+}
+
+.uncertainty-item strong {
+  color: #92400e;
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12.5px;
+}
+
+.heatmap-container {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.heatmap-header {
+  margin-bottom: 10px;
+}
+
+.heatmap-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.heatmap-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.table-desc-text {
+  font-size: 11.5px;
+  color: var(--slate-600);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  color: var(--slate-600);
+  flex-wrap: wrap;
+}
+
+.heat-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+table.heatmap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  min-width: 480px;
+}
+
+table.heatmap-table th, table.heatmap-table td {
+  padding: 7px 8px;
+  text-align: center;
+  border: 1px solid var(--slate-200);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+table.heatmap-table th {
+  background: var(--slate-100);
+  color: var(--slate-700);
+  font-weight: 600;
+}
+
+table.heatmap-table th.axis-label {
+  background: var(--slate-200);
+  color: var(--slate-800);
+}
+
+/* Heatmap cell coloring */
+td.heat-deep-pos { background-color: #059669; color: #ffffff; font-weight: 600; }
+td.heat-med-pos  { background-color: #34d399; color: #064e3b; }
+td.heat-low-pos  { background-color: #a7f3d0; color: #064e3b; }
+td.heat-sub-pos  { background-color: #d1fae5; color: #064e3b; }
+td.heat-neutral  { background-color: #fef3c7; color: #92400e; font-weight: 600; }
+td.heat-low-neg  { background-color: #fee2e2; color: #991b1b; }
+td.heat-med-neg  { background-color: #fca5a5; color: #991b1b; }
+td.heat-deep-neg { background-color: #dc2626; color: #ffffff; font-weight: 700; }
+
+td.heat-active-marker {
+  outline: 3px solid #0284c7;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.4);
+}
+
+.table-takeaway {
+  font-size: 11.5px;
+  color: var(--slate-700);
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: var(--slate-50);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-xl);
+  line-height: 1.35;
+}
+
+.plain-sentence-cell {
+  font-size: 12.5px;
+  color: var(--slate-800);
+  line-height: 1.4;
+}
+
+/* ======================================================== */
+/* RESPONSIVE & MOBILE SCREEN OPTIMIZATIONS (< 1040px)      */
+/* ======================================================== */
+@media (max-width: 1040px) {
+  .engine-layout {
+    grid-template-columns: 1fr;
+  }
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* TABLET & MOBILE (< 840px) */
+@media (max-width: 840px) {
+  header.app-header {
+    padding: 10px 16px;
+  }
+  nav.tab-nav {
+    padding: 0 16px;
+  }
+  .preset-bar {
+    padding: 8px 16px;
+  }
+  main.app-main {
+    padding: 16px;
+  }
+  .breakeven-callout-grid {
+    grid-template-columns: 1fr;
+  }
+  .uncertainty-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* MOBILE PHONES (< 640px) */
+@media (max-width: 640px) {
+  header.app-header {
+    padding: 8px 12px;
+  }
+  .brand-section {
+    gap: 8px;
+  }
+  .chai-logo {
+    height: 32px;
+  }
+  .brand-text h1 {
+    font-size: 13.5px;
+  }
+  .brand-text p {
+    font-size: 10.5px;
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-height: 28px;
+  }
+  
+  nav.tab-nav {
+    padding: 0 12px;
+  }
+  .tab-btn {
+    font-size: 12px;
+    padding: 10px 2px;
+    gap: 5px;
+  }
+
+  .preset-bar {
+    padding: 6px 12px;
+  }
+  .preset-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  main.app-main {
+    padding: 12px 10px;
+  }
+
+  .card-header {
+    padding: 10px 12px;
+  }
+  .card-body {
+    padding: 12px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .kpi-card {
+    padding: 10px;
+  }
+  .kpi-label {
+    font-size: 9.5px;
+  }
+  .kpi-value {
+    font-size: 16.5px;
+  }
+  .kpi-sub {
+    font-size: 9.5px;
+  }
+
+  .breakeven-card {
+    padding: 12px 14px;
+  }
+  .breakeven-main-stat {
+    font-size: 18px;
+  }
+  .breakeven-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .chart-card {
+    padding: 12px;
+  }
+  .svg-chart-container {
+    height: 200px;
+  }
+
+  .verdict-banner {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .verdict-pill {
+    align-self: flex-start;
+  }
+
+  .heatmap-container {
+    padding: 12px;
+  }
+}
+
+/* VERY SMALL SCREENS (< 380px) */
+@media (max-width: 380px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .breakeven-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* TOUCH TARGET ENHANCEMENTS */
+@media (pointer: coarse) {
+  input[type="range"] {
+    height: 8px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+  }
+  .preset-btn {
+    padding: 6px 10px;
+  }
+  .tab-btn {
+    padding: 12px 6px;
+  }
+  .switch {
+    width: 44px;
+    height: 24px;
+  }
+  .slider-round:before {
+    height: 18px;
+    width: 18px;
+  }
+  input:checked + .slider-round:before {
+    transform: translateX(20px);
+  }
+}
+
+/* Print Media */
+@media print {
+  body { background: #ffffff; font-size: 12px; }
+  header.app-header { position: static; box-shadow: none; border-bottom: 1px solid #000; padding: 10px 0; }
+  .header-actions, nav.tab-nav, .preset-bar, .action-btn { display: none !important; }
+  .tab-content { display: block !important; page-break-after: always; }
+  .engine-layout { display: block; }
+  .card-control-panel { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <div class="brand-logo-container">
+          <img src="image.jpeg" onerror="this.src='data:image/jpeg;base64,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'" alt="CHAI Logo" class="chai-logo">
+        </div>
+        <div class="brand-text">
+          <h1>Telecom Tower Battery Total Cost of Ownership (TCO) Model</h1>
+          <p>Standard LAB vs Longer-Lasting LAB (IndusPower XL-Series) &bull; CHAI Market Shaping Practice</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="action-btn" id="btn-reset" title="Reset all inputs to base case">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+
+        <button type="button" class="action-btn" id="btn-export-csv" title="Download model data as CSV">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+
+        <button type="button" class="action-btn primary" id="btn-print" title="Print report or export to PDF">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs (3 Main Sections) -->
+  <nav class="tab-nav">
+    <div class="tab-nav-inner">
+      <button type="button" class="tab-btn active" data-tab="tab-dashboard">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        TCO Modeling & Dashboard
+        <span class="tab-badge">Live</span>
+      </button>
+
+      <button type="button" class="tab-btn" data-tab="tab-sensitivity">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+        Sensitivity & Scenarios
+      </button>
+
+      <button type="button" class="tab-btn" data-tab="tab-assumptions">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+        Assumptions Section
+      </button>
+    </div>
+  </nav>
+
+  <!-- Presets Toolbar (Positioned below the 3 tabs, hidden on Assumptions tab) -->
+  <div id="preset-bar" class="preset-bar">
+    <div class="preset-bar-inner">
+      <span class="preset-label">Quick Scenarios:</span>
+      <button type="button" class="preset-btn active" data-preset="base">Base Case (36m)</button>
+      <button type="button" class="preset-btn" data-preset="pessimistic">Pessimistic Case</button>
+      <button type="button" class="preset-btn" data-preset="optimistic">Optimistic Case</button>
+      <button type="button" class="preset-btn" data-preset="rajasthan">Heat Stress (Rajasthan)</button>
+      <button type="button" class="preset-btn" data-preset="mp">Cooler Climate (MP)</button>
+      <button type="button" class="preset-btn" data-preset="cfo_strict">Zero Scrap Credit</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="app-main">
+
+    <!-- TAB 1: TCO MODELING & DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="engine-layout">
+        
+        <!-- Left: Input Controls -->
+        <aside class="card card-control-panel">
+          <div class="card-header">
+            <h2>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Model Variables
+            </h2>
+            <p>Live Parameter Tuning</p>
+          </div>
+
+          <div class="card-body">
+            
+            <!-- Towers in Scope -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Towers in Scope</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-t-num" class="control-val-input" value="10000" min="500" max="30000" step="500">
+                  <span class="control-unit">towers</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-t-range" min="1000" max="28000" step="500" value="10000">
+                <div class="range-bounds"><span>1,000</span><span>Base: 10,000</span><span>28,000</span></div>
+              </div>
+              <div class="control-hint">Scale of towers evaluated across the operator footprint.</div>
+            </div>
+
+            <!-- Batteries per Tower (N) -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Batteries per Tower</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-n-num" class="control-val-input" value="6" min="4" max="8" step="1">
+                  <span class="control-unit">units</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-n-range" min="4" max="8" step="1" value="6">
+                <div class="range-bounds"><span>4 (2G/3G)</span><span>Base: 6</span><span>8 (4G Heavy)</span></div>
+              </div>
+              <div class="control-hint">4 units on 2G/3G sites, 6 to 8 units on 4G sites.</div>
+            </div>
+
+            <!-- Standard LAB Unit Price -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Standard LAB Unit Price</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-p-std-num" class="control-val-input" value="14000" min="12000" max="16000" step="250">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-p-std-range" min="12000" max="16000" step="250" value="14000">
+                <div class="range-bounds"><span>₹13,000</span><span>Base: ₹14,000</span><span>₹15,000</span></div>
+              </div>
+              <div class="control-hint">Standard market price for 150Ah VRLA battery units.</div>
+            </div>
+
+            <!-- XL-Series Unit Price -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">XL-Series Unit Price</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-p-xl-num" class="control-val-input" value="17200" min="15000" max="22000" step="100">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-p-xl-range" min="15000" max="22000" step="100" value="17200">
+                <div class="range-bounds"><span>₹17,200 (Bulk 5k+)</span><span>List: ₹18,500</span><span>₹22,000</span></div>
+              </div>
+              <div class="control-hint">Bulk discount price for 5,000+ units (₹18,500 list price).</div>
+            </div>
+
+            <!-- Standard Battery Life -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Standard Battery Life</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-life-std-num" class="control-val-input" value="20" min="14" max="30" step="1">
+                  <span class="control-unit">months</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-life-std-range" min="14" max="30" step="1" value="20">
+                <div class="range-bounds"><span>18m (High Heat)</span><span>Base: 20m</span><span>26m (Cooler)</span></div>
+              </div>
+              <div class="control-hint">Observed life in hot climates (Rajasthan/Gujarat) before replacement.</div>
+            </div>
+
+            <!-- XL-Series Battery Life -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">XL-Series Battery Life</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-life-xl-num" class="control-val-input" value="36" min="20" max="60" step="1">
+                  <span class="control-unit">months</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-life-xl-range" min="20" max="60" step="1" value="36">
+                <div class="range-bounds"><span>24m (Low bound)</span><span>Base: 36m (Haircut)</span><span>54m (Claim)</span></div>
+              </div>
+              <div class="control-hint">Assumed field life with conservative 1/3 haircut on vendor claim.</div>
+            </div>
+
+            <!-- Replacement Visit Cost -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Replacement Visit Cost</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-c-visit-num" class="control-val-input" value="3250" min="2000" max="5000" step="250">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-c-visit-range" min="2000" max="5000" step="250" value="3250">
+                <div class="range-bounds"><span>₹2,500</span><span>Base: ₹3,250</span><span>₹4,000</span></div>
+              </div>
+              <div class="control-hint">All-in cost per visit for technician time, transport, and equipment.</div>
+            </div>
+
+            <!-- Scrap Value per Battery -->
+            <div class="control-group">
+              <div class="control-header">
+                <span class="control-label">Scrap Value per Battery</span>
+                <div class="control-val-display">
+                  <input type="number" id="input-s-num" class="control-val-input" value="350" min="200" max="500" step="25">
+                  <span class="control-unit">INR</span>
+                </div>
+              </div>
+              <div class="range-wrap">
+                <input type="range" id="input-s-range" min="200" max="500" step="25" value="350">
+                <div class="range-bounds"><span>₹200</span><span>Base: ₹350</span><span>₹500</span></div>
+              </div>
+              <div class="control-hint">Cash paid by scrap collectors per spent battery unit.</div>
+            </div>
+
+            <!-- Scrap Credit Toggle -->
+            <div class="toggle-wrap">
+              <div>
+                <span class="control-label">Include Scrap Credit</span>
+                <div class="control-hint">Credits scrap income against replacement cost.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggle-scrap" checked>
+                <span class="slider-round"></span>
+              </label>
+            </div>
+
+          </div>
+        </aside>
+
+        <!-- Right: Dashboard & Visuals -->
+        <section class="dashboard-main">
+          
+          <!-- Live Verdict Banner -->
+          <div id="verdict-banner" class="verdict-banner success">
+            <div class="verdict-main">
+              <div id="verdict-icon" class="verdict-icon">&#10003;</div>
+              <div>
+                <div id="verdict-title" class="verdict-title">XL-Series Cheaper: Saves ₹16,307 per tower/year</div>
+                <div id="verdict-subtitle" class="verdict-subtitle">Annual fleet saving of ₹16.31 Cr across 10,000 towers (31.9% cost reduction). Break-even life is 24.5 months (safety cushion: 11.5 months).</div>
+              </div>
+            </div>
+            <div id="verdict-pill" class="verdict-pill">XL CHEAPER</div>
+          </div>
+
+          <!-- Top KPI Cards Grid -->
+          <div class="kpi-grid">
+            
+            <div class="kpi-card">
+              <span class="kpi-label">Standard LAB: Cost / Tower</span>
+              <span id="kpi-std-tco" class="kpi-value">₹51,090/yr</span>
+              <span class="kpi-sub">Baseline VRLA (20m life)</span>
+            </div>
+
+            <div class="kpi-card highlight">
+              <span class="kpi-label">XL-Series: Cost / Tower</span>
+              <span id="kpi-xl-tco" class="kpi-value">₹34,783/yr</span>
+              <span class="kpi-sub">Extended-life (36m haircut life)</span>
+            </div>
+
+            <div id="card-saving-tower" class="kpi-card positive">
+              <span class="kpi-label">Annual Saving / Tower</span>
+              <span id="kpi-saving-tower" class="kpi-value">+₹16,307/yr</span>
+              <span id="kpi-saving-pct" class="kpi-sub">+31.9% cost reduction</span>
+            </div>
+
+            <div id="card-saving-fleet" class="kpi-card positive">
+              <span class="kpi-label">Annual Saving: 10,000 Towers</span>
+              <span id="kpi-saving-fleet" class="kpi-value">+₹16.31 Cr/yr</span>
+              <span class="kpi-sub">Total procurement saving</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Extra Year-1 Capex (10k Twrs)</span>
+              <span id="kpi-capex-hurdle" class="kpi-value">+₹19.20 Cr</span>
+              <span id="kpi-capex-sub" class="kpi-sub">+₹19,200/tower initial outlay</span>
+            </div>
+
+            <div class="kpi-card">
+              <span class="kpi-label">Simple Capex Payback</span>
+              <span id="kpi-payback" class="kpi-value">1.18 Yrs (14.1 Mos)</span>
+              <span class="kpi-sub">Capex recouped via lower opex</span>
+            </div>
+
+          </div>
+
+          <!-- Separate Breakeven Callout Cards: CAPEX vs Overall Expenditure -->
+          <div class="breakeven-callout-grid">
+            
+            <!-- Card A: CAPEX Breakeven -->
+            <div class="breakeven-card capex">
+              <div class="breakeven-title">
+                <span>CAPEX Breakeven (Upfront Payback Period)</span>
+                <span class="breakeven-badge">Initial Outlay</span>
+              </div>
+              <div id="be-capex-payback-main" class="breakeven-main-stat">1.18 Years (14.1 Months)</div>
+              <div class="breakeven-desc">
+                Measures how quickly the recurring annual operational savings recover the higher upfront equipment investment.
+              </div>
+              <div class="breakeven-metrics">
+                <div>
+                  <div class="breakeven-metric-label">Extra Upfront Capex</div>
+                  <div id="be-capex-outlay-twr" class="breakeven-metric-val">+₹19,200 / tower</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Fleet Extra Outlay</div>
+                  <div id="be-capex-outlay-flt" class="breakeven-metric-val">+₹19.20 Crore</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Annual OPEX Savings</div>
+                  <div id="be-capex-annual-save" class="breakeven-metric-val">₹16,307 / tower/yr</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Payback Status</div>
+                  <div class="breakeven-metric-val" style="color:var(--color-saving);">Fully Recovered in Year 2</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card B: Overall Expenditure Breakeven -->
+            <div class="breakeven-card overall">
+              <div class="breakeven-title">
+                <span>Overall Expenditure Breakeven (TCO Crossover)</span>
+                <span class="breakeven-badge">Full Lifecycle</span>
+              </div>
+              <div id="be-overall-life-main" class="breakeven-main-stat">24.5 Months</div>
+              <div class="breakeven-desc">
+                Measures the minimum lifespan and maximum price thresholds at which the total lifecycle cost of XL matches standard batteries.
+              </div>
+              <div class="breakeven-metrics">
+                <div>
+                  <div class="breakeven-metric-label">Required Breakeven Life</div>
+                  <div id="be-overall-life-margin" class="breakeven-metric-val">+11.5 Months cushion</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Maximum Unit Price</div>
+                  <div id="be-overall-price-main" class="breakeven-metric-val">₹25,353 / unit</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Max Allowable Premium</div>
+                  <div id="be-overall-prem-main" class="breakeven-metric-val">+81.1% (Quoted: +22.9%)</div>
+                </div>
+                <div>
+                  <div class="breakeven-metric-label">Overall Expenditure</div>
+                  <div class="breakeven-metric-val" style="color:var(--color-xl);">31.9% Lower TCO</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="charts-grid">
+            
+            <!-- Chart 1: Cost per Tower Breakdown -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span class="chart-title">Annual Battery Cost per Tower</span>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#059669;"></span> Annual Saving</span>
+                </div>
+              </div>
+              <div id="chart-cost-breakdown" class="svg-chart-container"></div>
+            </div>
+
+            <!-- Chart 2: 5-Year Cumulative Outflow -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span class="chart-title">5-Year Cumulative Outflow per Tower</span>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series</span>
+                  <span class="legend-item"><span class="legend-color" style="background:#d97706;"></span> Break-Even</span>
+                </div>
+              </div>
+              <div id="chart-payback-curve" class="svg-chart-container"></div>
+            </div>
+
+          </div>
+
+          <!-- Chart 3: Lifespan Crossover Sensitivity Curve -->
+          <div class="chart-card" style="margin-bottom: 20px;">
+            <div class="chart-header">
+              <div>
+                <span class="chart-title">TCO Crossover Curve: Annual Cost vs XL Lifespan</span>
+                <p style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">Shows how annual cost per tower falls as battery lifespan increases. The crossover point (24.5 months) is where XL becomes cheaper than standard.</p>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-color" style="background:#475569;"></span> Standard LAB Benchmark</span>
+                <span class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> XL-Series Curve</span>
+                <span class="legend-item"><span class="legend-color" style="background:#d97706;"></span> Break-Even Life (24.5m)</span>
+                <span class="legend-item"><span class="legend-color" style="background:#059669;"></span> Base Assumption (36m)</span>
+              </div>
+            </div>
+            <div id="chart-crossover-curve" class="svg-chart-container" style="height: 220px;"></div>
+          </div>
+
+          <!-- Table: 5 Columns, Note column removed as requested -->
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                TCO Model: Cost per Tower per Year
+              </h2>
+              <p>Financial Comparison</p>
+            </div>
+            
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Line Item</th>
+                    <th>Unit</th>
+                    <th>Standard LAB</th>
+                    <th>IndusPower XL-Series</th>
+                    <th>Variance / Delta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Unit Price</strong></td>
+                    <td>INR / unit</td>
+                    <td id="tbl-p-std" class="num">₹14,000</td>
+                    <td id="tbl-p-xl" class="num">₹17,200</td>
+                    <td id="tbl-p-delta" class="num">+₹3,200 (+22.9%)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Batteries per Tower</strong></td>
+                    <td>units</td>
+                    <td id="tbl-n-std" class="num">6</td>
+                    <td id="tbl-n-xl" class="num">6</td>
+                    <td class="num">0</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Battery Life</strong></td>
+                    <td>months</td>
+                    <td id="tbl-life-std" class="num">20 mos</td>
+                    <td id="tbl-life-xl" class="num">36 mos</td>
+                    <td id="tbl-life-delta" class="num">+16 mos (+80%)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Replacement Cycles per Year</strong></td>
+                    <td>cycles / yr</td>
+                    <td id="tbl-freq-std" class="num">0.60 /yr</td>
+                    <td id="tbl-freq-xl" class="num">0.33 /yr</td>
+                    <td id="tbl-freq-delta" class="num">-0.27 /yr</td>
+                  </tr>
+                  <tr>
+                    <td>Battery Purchase per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-bat-std" class="num">₹84,000</td>
+                    <td id="tbl-bat-xl" class="num">₹1,03,200</td>
+                    <td class="num">+₹19,200</td>
+                  </tr>
+                  <tr>
+                    <td>Replacement Visit per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-vis-std" class="num">₹3,250</td>
+                    <td id="tbl-vis-xl" class="num">₹3,250</td>
+                    <td class="num">₹0</td>
+                  </tr>
+                  <tr>
+                    <td>Scrap Credit per Cycle</td>
+                    <td>INR</td>
+                    <td id="tbl-scr-std" class="num">-₹2,100</td>
+                    <td id="tbl-scr-xl" class="num">-₹2,100</td>
+                    <td class="num">₹0</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td><strong>Cost per Replacement Cycle</strong></td>
+                    <td>INR</td>
+                    <td id="tbl-cyc-std" class="num">₹85,150</td>
+                    <td id="tbl-cyc-xl" class="num">₹1,04,350</td>
+                    <td id="tbl-cyc-delta" class="num">+₹19,200</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>Annual TCO per Tower</strong></td>
+                    <td>INR / twr / yr</td>
+                    <td id="tbl-tco-std" class="num">₹51,090</td>
+                    <td id="tbl-tco-xl" class="num">₹34,783</td>
+                    <td id="tbl-tco-delta" class="num">-₹16,307 (-31.9%)</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td><strong>Annual TCO, 10,000 Towers</strong></td>
+                    <td>INR Crore / yr</td>
+                    <td id="tbl-flt-std" class="num">₹51.09 Cr</td>
+                    <td id="tbl-flt-xl" class="num">₹34.78 Cr</td>
+                    <td id="tbl-flt-delta" class="num" style="color:#059669; font-weight:700;">+₹16.31 Cr / yr</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Extra Year-1 Capex, 10,000 Towers</strong></td>
+                    <td>INR Crore</td>
+                    <td class="num">₹84.00 Cr</td>
+                    <td class="num">₹103.20 Cr</td>
+                    <td id="tbl-cfo-capex" class="num" style="color:#dc2626; font-weight:700;">+₹19.20 Cr</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 2: SENSITIVITY & SCENARIOS -->
+    <div id="tab-sensitivity" class="tab-content">
+      
+      <!-- Explicit Callout of the Least Confident Variables -->
+      <div class="uncertainty-box">
+        <div class="uncertainty-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Key Model Uncertainties: The Two Least Confident Variables
+        </div>
+        <div class="uncertainty-grid">
+          <div class="uncertainty-item">
+            <strong>1. Effective Battery Lifespan in Field Conditions (Base: 36 Months)</strong>
+            The supplier claims a 48 to 60 month lifespan based on 1,200 cycles in controlled conditions. However, high ambient temperatures above 40&deg;C in states like Rajasthan and Gujarat degrade batteries significantly faster than laboratory ratings. Our model applies a conservative one-third haircut down to 36 months, but full real-world lifespan data is not yet proven.
+          </div>
+          <div class="uncertainty-item">
+            <strong>2. Number of Batteries per Tower (Base: 6 Units)</strong>
+            Tower configurations vary widely across networks: 2G/3G sites typically use 4 battery units, while heavier 4G sites use 6 to 8 units. The exact string size across the operator's fleet is unconfirmed. While this variable scales the total rupee savings, our sensitivity analysis proves it does not alter the break-even lifespan threshold.
+          </div>
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 1 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 1: Battery Lifespan vs Batteries per Tower</div>
+            <div class="heatmap-legend">
+              <span class="legend-item"><span class="heat-swatch heat-deep-pos"></span> Large Saving</span>
+              <span class="legend-item"><span class="heat-swatch heat-sub-pos"></span> Positive Saving</span>
+              <span class="legend-item"><span class="heat-swatch heat-neutral"></span> Break-Even</span>
+              <span class="legend-item"><span class="heat-swatch heat-low-neg"></span> Standard Cheaper</span>
+            </div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Evaluates the annual procurement saving per tower (INR) across varying battery lifespans (rows) and string configurations (columns), keeping unit prices at base values (₹14,000 standard vs ₹17,200 XL). Positive green numbers indicate the longer-lasting battery is cheaper; negative red numbers indicate standard batteries are cheaper.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">XL Battery Life &darr; | Batteries per Tower &rarr;</th>
+                <th>4 units (2G/3G)</th>
+                <th>5 units</th>
+                <th>6 units (Base)</th>
+                <th>7 units</th>
+                <th>8 units (4G Heavy)</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap1-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> Across all battery string configurations (4 to 8 units), the break-even point remains stable between 24.4 and 24.7 months. The number of batteries per tower changes the total rupee amount saved, but does not alter whether switching is financially viable.
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 2 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 2: Battery Lifespan vs Purchase Price of Longer-Lasting Battery</div>
+            <div class="heatmap-legend">
+              <span class="legend-item"><span class="heat-swatch heat-deep-pos"></span> XL Cheaper</span>
+              <span class="legend-item"><span class="heat-swatch heat-neutral"></span> Break-Even</span>
+              <span class="legend-item"><span class="heat-swatch heat-deep-neg"></span> Standard Cheaper</span>
+            </div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Tests the price tolerance of the longer-lasting battery (columns) across different lifespan outcomes (rows), assuming 6 batteries per tower and a standard battery price of ₹14,000.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">XL Battery Life &darr; | XL Unit Price &rarr;</th>
+                <th>₹15,000</th>
+                <th>₹16,000</th>
+                <th>₹17,200 (Bulk Quote)</th>
+                <th>₹18,500 (List Price)</th>
+                <th>₹20,000</th>
+                <th>₹22,000</th>
+                <th>₹25,000</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap2-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> At our conservative base assumption of 36 months, the longer-lasting battery remains cheaper even if the supplier refuses discounts and charges the full ₹18,500 list price (saving ₹13,707 per tower/year). The battery remains cost-effective up to ₹25,353 per unit.
+        </div>
+      </div>
+
+      <!-- Sensitivity Grid 3 -->
+      <div class="heatmap-container">
+        <div class="heatmap-header">
+          <div class="heatmap-title-row">
+            <div class="heatmap-title">Sensitivity Grid 3: Operating Climate (Standard Life) vs Longer-Lasting Battery Life</div>
+          </div>
+          <div class="table-desc-text">
+            <strong>What this table shows:</strong> Compares standard battery lifespan across different operating climates (rows)—from hot clusters like Rajasthan and Gujarat (18 to 20 months) to cooler states like Madhya Pradesh (24 to 26 months)—against varying longer-lasting battery lifespans (columns).
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th class="axis-label" style="text-align:left;">Standard Life (Climate Zone) &darr; | XL Battery Life &rarr;</th>
+                <th>24 months</th>
+                <th>30 months</th>
+                <th>36 months (Base)</th>
+                <th>42 months</th>
+                <th>48 months</th>
+                <th>54 months</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap3-body"></tbody>
+          </table>
+        </div>
+        <div class="table-takeaway">
+          <strong>Key Insight:</strong> Financial savings are greatest in high-temperature regions where standard batteries fail rapidly (saving ₹16,307 to ₹21,983 per tower). In cooler regions where standard batteries last 26 months, savings are narrower (₹4,517 per tower), showing that tower operators should prioritize high-heat clusters for initial deployment.
+        </div>
+      </div>
+
+      <!-- Scenarios Table -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Outer Bounds Scenario Comparison
+          </h2>
+          <p>Worst-Case vs Base Case vs Best-Case Financial Outcomes</p>
+        </div>
+        
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model Input / Output Metric</th>
+                <th>Pessimistic Case (Adverse Bounds)</th>
+                <th>Base Case Assumption</th>
+                <th>Optimistic Case (Favorable Bounds)</th>
+                <th>Active Live Settings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Batteries per Tower</td>
+                <td>4 units</td>
+                <td>6 units</td>
+                <td>8 units</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Standard Battery Unit Price</td>
+                <td>₹13,000</td>
+                <td>₹14,000</td>
+                <td>₹15,000</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>XL-Series Battery Unit Price</td>
+                <td>₹18,500 (List)</td>
+                <td>₹17,200 (Bulk)</td>
+                <td>₹17,200 (Bulk)</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Standard Battery Lifespan</td>
+                <td>24 months</td>
+                <td>20 months</td>
+                <td>18 months</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>XL-Series Battery Lifespan</td>
+                <td>24 months</td>
+                <td>36 months</td>
+                <td>54 months</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr>
+                <td>Replacement Visit Cost</td>
+                <td>₹2,500</td>
+                <td>₹3,250</td>
+                <td>₹4,000</td>
+                <td>Linked to controls</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Annual Cost per Tower: Standard</strong></td>
+                <td id="scen-pess-tco-std">₹26,450</td>
+                <td id="scen-base-tco-std">₹51,090</td>
+                <td id="scen-opt-tco-std">₹81,067</td>
+                <td id="scen-curr-tco-std">₹51,090</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Annual Cost per Tower: XL-Series</strong></td>
+                <td id="scen-pess-tco-xl">₹37,450</td>
+                <td id="scen-base-tco-xl">₹34,783</td>
+                <td id="scen-opt-tco-xl">₹30,933</td>
+                <td id="scen-curr-tco-xl">₹34,783</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Annual Saving per Tower</strong></td>
+                <td id="scen-pess-sav-twr" style="color:#dc2626;">-₹11,000</td>
+                <td id="scen-base-sav-twr" style="color:#059669;">+₹16,307</td>
+                <td id="scen-opt-sav-twr" style="color:#059669;">+₹50,133</td>
+                <td id="scen-curr-sav-twr">+₹16,307</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Fleet Annual Saving: 10,000 Towers</strong></td>
+                <td id="scen-pess-sav-flt" style="color:#dc2626;">-₹11.00 Cr / yr</td>
+                <td id="scen-base-sav-flt" style="color:#059669;">+₹16.31 Cr / yr</td>
+                <td id="scen-opt-sav-flt" style="color:#059669;">+₹50.13 Cr / yr</td>
+                <td id="scen-curr-sav-flt">+₹16.31 Cr / yr</td>
+              </tr>
+              <tr>
+                <td>Extra Year-1 Capex (10,000 Towers)</td>
+                <td id="scen-pess-capex">+₹22.00 Cr</td>
+                <td id="scen-base-capex">+₹19.20 Cr</td>
+                <td id="scen-opt-capex">+₹17.60 Cr</td>
+                <td id="scen-curr-capex">+₹19.20 Cr</td>
+              </tr>
+              <tr>
+                <td>XL Lifespan Needed to Break Even</td>
+                <td id="scen-pess-be">33.98 months</td>
+                <td id="scen-base-be">24.51 months</td>
+                <td id="scen-opt-be">20.61 months</td>
+                <td id="scen-curr-be">24.51 months</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>Financial Verdict</strong></td>
+                <td id="scen-pess-verdict" style="color:#dc2626;">Standard Cheaper</td>
+                <td id="scen-base-verdict" style="color:#059669;">XL Cheaper</td>
+                <td id="scen-opt-verdict" style="color:#059669;">XL Cheaper</td>
+                <td id="scen-curr-verdict" style="color:#059669;">XL Cheaper</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- TAB 3: ASSUMPTIONS SECTION -->
+    <div id="tab-assumptions" class="tab-content">
+      
+      <!-- Table 1: Model Input Assumptions (Plain English sentences, no source/confidence/notes) -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Model Input Variables
+          </h2>
+          <p>Core Model Parameters</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Assumption</th>
+                <th>Unit</th>
+                <th>Base Case</th>
+                <th>Low Range</th>
+                <th>High Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="plain-sentence-cell">The telecom tower operator manages an evaluation fleet of 10,000 towers.</td>
+                <td>towers</td>
+                <td class="num">10,000</td>
+                <td class="num">10,000</td>
+                <td class="num">10,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">Each telecom tower site operates with 6 battery units in its backup power string.</td>
+                <td>units/tower</td>
+                <td class="num">6</td>
+                <td class="num">4</td>
+                <td class="num">8</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The unit purchase price for a standard 150Ah lead-acid battery is ₹14,000.</td>
+                <td>INR/unit</td>
+                <td class="num">14,000</td>
+                <td class="num">13,000</td>
+                <td class="num">15,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The unit purchase price for an extended-life XL-Series battery is ₹17,200 for orders of 5,000 or more units.</td>
+                <td>INR/unit</td>
+                <td class="num">17,200</td>
+                <td class="num">17,200</td>
+                <td class="num">18,500</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">A standard battery operating in high-temperature regions lasts an average of 20 months before needing replacement.</td>
+                <td>months</td>
+                <td class="num">20</td>
+                <td class="num">18</td>
+                <td class="num">24</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">An extended-life XL-Series battery is assumed to achieve an effective lifespan of 36 months under Indian field conditions.</td>
+                <td>months</td>
+                <td class="num">36</td>
+                <td class="num">24</td>
+                <td class="num">54</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The all-in cost for a field technician visit to replace batteries is ₹3,250 per tower visit.</td>
+                <td>INR/visit</td>
+                <td class="num">3,250</td>
+                <td class="num">2,500</td>
+                <td class="num">4,000</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">The cash scrap value received from collectors for each spent battery replaced at the site is ₹350.</td>
+                <td>INR/unit</td>
+                <td class="num">350</td>
+                <td class="num">300</td>
+                <td class="num">400</td>
+              </tr>
+              <tr>
+                <td class="plain-sentence-cell">Scrap value income is included as an operational cash credit that reduces net replacement expenses.</td>
+                <td>flag</td>
+                <td class="num">Yes (1)</td>
+                <td class="num">No (0)</td>
+                <td class="num">Yes (1)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table 2: Operational / Structural Assumptions (Plain English sentences only) -->
+      <div class="card">
+        <div class="card-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Operational Assumptions
+          </h2>
+          <p>Structural Modeling Rules</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Operational Assumption</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;">1</td>
+                <td class="plain-sentence-cell">All battery units at a tower site are replaced together in a single technician visit at the end of each operating cycle.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">2</td>
+                <td class="plain-sentence-cell">Batteries are replaced when usable capacity drops below the operator's working threshold, which is identical for both options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">3</td>
+                <td class="plain-sentence-cell">Financial figures are evaluated on a nominal annual basis without general price inflation or discounting.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">4</td>
+                <td class="plain-sentence-cell">Scrap income is earned for every replaced battery unit and is identical per unit for both battery options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">5</td>
+                <td class="plain-sentence-cell">Technician labor, transport, and equipment costs per replacement visit are identical for installing both types of batteries.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">6</td>
+                <td class="plain-sentence-cell">Batteries are assumed to achieve their stated operating life on average without premature random cell failures.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">7</td>
+                <td class="plain-sentence-cell">Both battery types have a 150Ah capacity rating and deliver equivalent usable power backup to the telecom tower.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">8</td>
+                <td class="plain-sentence-cell">Environmental and health impacts from battery recycling are excluded to keep the financial evaluation strictly focused on procurement costs.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">9</td>
+                <td class="plain-sentence-cell">Taxes, freight, and standard installation are excluded from the model and assumed equal across both battery options.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">10</td>
+                <td class="plain-sentence-cell">The standard battery lifespan of 20 months in high-temperature regions is applied across the evaluation fleet.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">11</td>
+                <td class="plain-sentence-cell">The bulk purchase price of ₹17,200 applies to the full 10,000-tower deployment because total order volume exceeds 5,000 units.</td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;">12</td>
+                <td class="plain-sentence-cell">Performance data from ongoing field deployments is not used to adjust the baseline lifespan assumption until complete failure data is available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+// CHAI Telecom Tower Battery TCO Model - Engine & Visualizations
+
+(function() {
+  'use strict';
+
+  // State Management
+  const state = {
+    T: 10000,       // Towers in scope
+    N: 6,           // Batteries per tower
+    P_std: 14000,   // Standard LAB unit price, INR
+    P_xl: 17200,    // XL-Series unit price, INR
+    L_std: 20,      // Standard battery life, months
+    L_xl: 36,       // XL-Series battery life, months
+    C_visit: 3250,  // Replacement visit cost, INR
+    S: 350,         // Scrap value per spent battery, INR
+    F_scrap: 1,     // Include scrap credit? 1 = yes, 0 = no
+    activePreset: 'base'
+  };
+
+  const presets = {
+    base: {
+      T: 10000, N: 6, P_std: 14000, P_xl: 17200,
+      L_std: 20, L_xl: 36, C_visit: 3250, S: 350, F_scrap: 1
+    },
+    pessimistic: {
+      T: 10000, N: 4, P_std: 13000, P_xl: 18500,
+      L_std: 24, L_xl: 24, C_visit: 2500, S: 400, F_scrap: 1
+    },
+    optimistic: {
+      T: 10000, N: 8, P_std: 15000, P_xl: 17200,
+      L_std: 18, L_xl: 54, C_visit: 4000, S: 300, F_scrap: 1
+    },
+    rajasthan: {
+      T: 10000, N: 6, P_std: 14000, P_xl: 17200,
+      L_std: 18, L_xl: 32, C_visit: 3500, S: 350, F_scrap: 1
+    },
+    mp: {
+      T: 10000, N: 6, P_std: 14000, P_xl: 17200,
+      L_std: 25, L_xl: 40, C_visit: 3000, S: 350, F_scrap: 1
+    },
+    cfo_strict: {
+      T: 10000, N: 6, P_std: 14000, P_xl: 17200,
+      L_std: 20, L_xl: 36, C_visit: 3250, S: 350, F_scrap: 0
+    }
+  };
+
+  // Indian Rupee & Number Formatting
+  function formatINR(val, decimals = 0) {
+    if (isNaN(val) || val === null) return '₹0';
+    const rounded = Math.round(val);
+    const sign = rounded < 0 ? '-' : '';
+    const absStr = Math.abs(rounded).toString();
+    
+    let lastThree = absStr.substring(absStr.length - 3);
+    let otherNumbers = absStr.substring(0, absStr.length - 3);
+    if (otherNumbers !== '') {
+      lastThree = ',' + lastThree;
+    }
+    const res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    return sign + '₹' + res;
+  }
+
+  function formatCr(val) {
+    if (isNaN(val) || val === null) return '₹0.00 Cr';
+    const sign = val < 0 ? '-' : '+';
+    return `${sign}₹${Math.abs(val).toFixed(2)} Cr`;
+  }
+
+  function formatPct(val) {
+    if (isNaN(val) || val === null) return '0.0%';
+    const sign = val > 0 ? '+' : '';
+    return `${sign}${val.toFixed(1)}%`;
+  }
+
+  // TCO Model Math
+  function calculateModel(params) {
+    const { T, N, P_std, P_xl, L_std, L_xl, C_visit, S, F_scrap } = params;
+
+    const scrapCreditPerCycle = N * S * F_scrap;
+    const costCycleStd = N * (P_std - S * F_scrap) + C_visit;
+    const costCycleXl = N * (P_xl - S * F_scrap) + C_visit;
+
+    const freqStd = 12 / L_std;
+    const freqXl = 12 / L_xl;
+
+    const tcoStdTower = freqStd * costCycleStd;
+    const tcoXlTower = freqXl * costCycleXl;
+
+    const grossPurchaseStd = freqStd * (N * P_std);
+    const grossPurchaseXl = freqXl * (N * P_xl);
+    const visitAnnualStd = freqStd * C_visit;
+    const visitAnnualXl = freqXl * C_visit;
+    const scrapAnnualStd = freqStd * scrapCreditPerCycle;
+    const scrapAnnualXl = freqXl * scrapCreditPerCycle;
+
+    const savingTower = tcoStdTower - tcoXlTower;
+    const savingFleetCr = (savingTower * T) / 1e7;
+    const savingPct = (savingTower / tcoStdTower) * 100;
+
+    const initialCapexStdTower = N * P_std;
+    const initialCapexXlTower = N * P_xl;
+    const extraCapexTower = initialCapexXlTower - initialCapexStdTower;
+    const extraCapexFleetCr = (extraCapexTower * T) / 1e7;
+
+    const breakEvenXlLife = L_std * (costCycleXl / costCycleStd);
+    const breakEvenXlPrice = (((L_xl / L_std) * costCycleStd - C_visit) / N) + (S * F_scrap);
+    const maxAbsorbedPremiumPct = ((breakEvenXlPrice - P_std) / P_std) * 100;
+    const actualPremiumPct = ((P_xl - P_std) / P_std) * 100;
+    const lifeSafetyMargin = L_xl - breakEvenXlLife;
+
+    const paybackYears = savingTower > 0 ? (extraCapexTower / savingTower) : null;
+    const paybackMonths = paybackYears !== null ? paybackYears * 12 : null;
+
+    return {
+      costCycleStd,
+      costCycleXl,
+      freqStd,
+      freqXl,
+      grossPurchaseStd,
+      grossPurchaseXl,
+      visitAnnualStd,
+      visitAnnualXl,
+      scrapAnnualStd,
+      scrapAnnualXl,
+      scrapCreditPerCycle,
+      tcoStdTower,
+      tcoXlTower,
+      tcoStdFleetCr: (tcoStdTower * T) / 1e7,
+      tcoXlFleetCr: (tcoXlTower * T) / 1e7,
+      savingTower,
+      savingFleetCr,
+      savingPct,
+      initialCapexStdTower,
+      initialCapexXlTower,
+      extraCapexTower,
+      extraCapexFleetCr,
+      breakEvenXlLife,
+      breakEvenXlPrice,
+      maxAbsorbedPremiumPct,
+      actualPremiumPct,
+      lifeSafetyMargin,
+      paybackYears,
+      paybackMonths
+    };
+  }
+
+  // Update UI Elements
+  function updateUI() {
+    const res = calculateModel(state);
+
+    // Update Banner Verdict
+    const banner = document.getElementById('verdict-banner');
+    const verdictTitle = document.getElementById('verdict-title');
+    const verdictSub = document.getElementById('verdict-subtitle');
+    const verdictPill = document.getElementById('verdict-pill');
+    const verdictIcon = document.getElementById('verdict-icon');
+
+    if (res.savingTower > 500) {
+      banner.className = 'verdict-banner success';
+      verdictIcon.innerHTML = '&#10003;';
+      verdictTitle.textContent = `XL-Series Cheaper: Saves ${formatINR(res.savingTower)} per tower/year`;
+      verdictSub.textContent = `Annual fleet saving of ${formatCr(res.savingFleetCr)} across ${state.T.toLocaleString()} towers (${Math.abs(res.savingPct).toFixed(1)}% cost reduction). Break-even life is ${res.breakEvenXlLife.toFixed(1)} months (safety cushion: ${res.lifeSafetyMargin.toFixed(1)} months).`;
+      verdictPill.textContent = 'XL CHEAPER';
+    } else if (res.savingTower < -500) {
+      banner.className = 'verdict-banner danger';
+      verdictIcon.innerHTML = '&#9888;';
+      verdictTitle.textContent = `Standard LAB Cheaper: XL costs ${formatINR(Math.abs(res.savingTower))} more per tower/year`;
+      verdictSub.textContent = `Fleet cost increases by ${formatCr(res.savingFleetCr)}/yr. XL lifespan of ${state.L_xl} months is below the break-even threshold of ${res.breakEvenXlLife.toFixed(1)} months.`;
+      verdictPill.textContent = 'STANDARD CHEAPER';
+    } else {
+      banner.className = 'verdict-banner warning';
+      verdictIcon.innerHTML = '&#8776;';
+      verdictTitle.textContent = `At Break-Even: Difference is ${formatINR(res.savingTower)}/yr`;
+      verdictSub.textContent = `XL-Series cost matches standard LAB within 1% (${res.breakEvenXlLife.toFixed(1)} months break-even).`;
+      verdictPill.textContent = 'BREAK-EVEN';
+    }
+
+    // Update Top KPI Cards
+    document.getElementById('kpi-std-tco').textContent = formatINR(res.tcoStdTower) + '/yr';
+    document.getElementById('kpi-xl-tco').textContent = formatINR(res.tcoXlTower) + '/yr';
+
+    const kpiSavingTowerEl = document.getElementById('kpi-saving-tower');
+    kpiSavingTowerEl.textContent = (res.savingTower >= 0 ? '+' : '') + formatINR(res.savingTower) + '/yr';
+    const cardSavingTower = document.getElementById('card-saving-tower');
+    cardSavingTower.className = 'kpi-card ' + (res.savingTower >= 0 ? 'positive' : 'negative');
+    document.getElementById('kpi-saving-pct').textContent = `${formatPct(res.savingPct)} cost reduction`;
+
+    const kpiSavingFleetEl = document.getElementById('kpi-saving-fleet');
+    kpiSavingFleetEl.textContent = formatCr(res.savingFleetCr) + '/yr';
+    const cardSavingFleet = document.getElementById('card-saving-fleet');
+    cardSavingFleet.className = 'kpi-card ' + (res.savingFleetCr >= 0 ? 'positive' : 'negative');
+
+    document.getElementById('kpi-capex-hurdle').textContent = `+₹${res.extraCapexFleetCr.toFixed(2)} Cr`;
+    document.getElementById('kpi-capex-sub').textContent = `+${formatINR(res.extraCapexTower)}/tower upfront`;
+
+    const kpiPaybackEl = document.getElementById('kpi-payback');
+    if (res.paybackMonths !== null && res.paybackMonths > 0) {
+      kpiPaybackEl.textContent = `${res.paybackYears.toFixed(2)} Yrs (${res.paybackMonths.toFixed(1)}m)`;
+    } else {
+      kpiPaybackEl.textContent = 'No Payback';
+    }
+
+    // Call out 1: CAPEX Breakeven (Payback)
+    const beCapexMain = document.getElementById('be-capex-payback-main');
+    if (beCapexMain) {
+      beCapexMain.textContent = (res.paybackMonths !== null && res.paybackMonths > 0)
+        ? `${res.paybackYears.toFixed(2)} Years (${res.paybackMonths.toFixed(1)} Months)`
+        : 'Does not break even';
+    }
+    const beCapexTwr = document.getElementById('be-capex-outlay-twr');
+    if (beCapexTwr) beCapexTwr.textContent = `+${formatINR(res.extraCapexTower)} / tower`;
+    const beCapexFlt = document.getElementById('be-capex-outlay-flt');
+    if (beCapexFlt) beCapexFlt.textContent = `+₹${res.extraCapexFleetCr.toFixed(2)} Crore fleet`;
+    const beCapexSav = document.getElementById('be-capex-annual-save');
+    if (beCapexSav) beCapexSav.textContent = `${formatINR(res.savingTower)} / tower/year`;
+
+    // Call out 2: Overall Expenditure Breakeven (TCO Crossover)
+    const beLifeMain = document.getElementById('be-overall-life-main');
+    if (beLifeMain) beLifeMain.textContent = `${res.breakEvenXlLife.toFixed(1)} Months`;
+    const beLifeMargin = document.getElementById('be-overall-life-margin');
+    if (beLifeMargin) beLifeMargin.textContent = `${res.lifeSafetyMargin >= 0 ? '+' : ''}${res.lifeSafetyMargin.toFixed(1)} Months cushion`;
+    const bePriceMain = document.getElementById('be-overall-price-main');
+    if (bePriceMain) bePriceMain.textContent = formatINR(res.breakEvenXlPrice) + ' / unit';
+    const bePremMain = document.getElementById('be-overall-prem-main');
+    if (bePremMain) bePremMain.textContent = `+${res.maxAbsorbedPremiumPct.toFixed(1)}% (Quoted: +${res.actualPremiumPct.toFixed(1)}%)`;
+
+    // Update Detailed Table
+    document.getElementById('tbl-p-std').textContent = formatINR(state.P_std);
+    document.getElementById('tbl-p-xl').textContent = formatINR(state.P_xl);
+    document.getElementById('tbl-p-delta').textContent = `+${formatINR(state.P_xl - state.P_std)} (+${res.actualPremiumPct.toFixed(1)}%)`;
+
+    document.getElementById('tbl-n-std').textContent = state.N;
+    document.getElementById('tbl-n-xl').textContent = state.N;
+
+    document.getElementById('tbl-life-std').textContent = `${state.L_std} mos`;
+    document.getElementById('tbl-life-xl').textContent = `${state.L_xl} mos`;
+    document.getElementById('tbl-life-delta').textContent = `+${state.L_xl - state.L_std} mos (+${(((state.L_xl/state.L_std)-1)*100).toFixed(0)}%)`;
+
+    document.getElementById('tbl-freq-std').textContent = `${res.freqStd.toFixed(2)} /yr`;
+    document.getElementById('tbl-freq-xl').textContent = `${res.freqXl.toFixed(2)} /yr`;
+    document.getElementById('tbl-freq-delta').textContent = `${(res.freqXl - res.freqStd).toFixed(2)} /yr`;
+
+    document.getElementById('tbl-bat-std').textContent = formatINR(state.N * state.P_std);
+    document.getElementById('tbl-bat-xl').textContent = formatINR(state.N * state.P_xl);
+
+    document.getElementById('tbl-vis-std').textContent = formatINR(state.C_visit);
+    document.getElementById('tbl-vis-xl').textContent = formatINR(state.C_visit);
+
+    document.getElementById('tbl-scr-std').textContent = '-' + formatINR(res.scrapCreditPerCycle);
+    document.getElementById('tbl-scr-xl').textContent = '-' + formatINR(res.scrapCreditPerCycle);
+
+    document.getElementById('tbl-cyc-std').textContent = formatINR(res.costCycleStd);
+    document.getElementById('tbl-cyc-xl').textContent = formatINR(res.costCycleXl);
+    document.getElementById('tbl-cyc-delta').textContent = `+${formatINR(res.costCycleXl - res.costCycleStd)}`;
+
+    document.getElementById('tbl-tco-std').textContent = formatINR(res.tcoStdTower);
+    document.getElementById('tbl-tco-xl').textContent = formatINR(res.tcoXlTower);
+    document.getElementById('tbl-tco-delta').textContent = `${res.savingTower >= 0 ? '-' : '+'}${formatINR(Math.abs(res.savingTower))} (${formatPct(-res.savingPct)})`;
+
+    document.getElementById('tbl-flt-std').textContent = `₹${res.tcoStdFleetCr.toFixed(2)} Cr`;
+    document.getElementById('tbl-flt-xl').textContent = `₹${res.tcoXlFleetCr.toFixed(2)} Cr`;
+    document.getElementById('tbl-flt-delta').textContent = formatCr(res.savingFleetCr);
+
+    document.getElementById('tbl-cfo-capex').textContent = `+₹${res.extraCapexFleetCr.toFixed(2)} Cr`;
+
+    // Render Charts
+    renderBarChart(res);
+    renderCumulativeChart(res);
+    renderCrossoverChart(res);
+
+    // Update Sensitivity Matrices & Scenarios Table
+    renderSensitivityGrids();
+    updateScenarioTable();
+  }
+
+  // Chart 1: Annual Battery Cost per Tower (Responsive for Mobile)
+  function renderBarChart(res) {
+    const container = document.getElementById('chart-cost-breakdown');
+    if (!container) return;
+
+    const width = container.clientWidth || 360;
+    const isMobile = width < 440;
+    const height = isMobile ? 200 : 220;
+    const padding = {
+      top: 25,
+      right: isMobile ? 12 : 24,
+      bottom: isMobile ? 32 : 36,
+      left: isMobile ? 46 : 60
+    };
+
+    const maxVal = Math.max(res.tcoStdTower, res.tcoXlTower, Math.abs(res.savingTower)) * 1.25;
+    const chartW = width - padding.left - padding.right;
+    const chartH = height - padding.top - padding.bottom;
+
+    const yScale = val => chartH - (val / maxVal) * chartH;
+
+    let svg = `<svg class="svg-chart" viewBox="0 0 ${width} ${height}">`;
+
+    for (let i = 0; i <= 4; i++) {
+      const v = (maxVal / 4) * i;
+      const y = padding.top + yScale(v);
+      svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="3 3"/>`;
+      svg += `<text x="${padding.left - 6}" y="${y + 4}" font-size="${isMobile ? 9 : 10}" fill="#64748b" text-anchor="end">₹${Math.round(v/1000)}k</text>`;
+    }
+
+    const colW = chartW / 3;
+    const barW = Math.min(isMobile ? 34 : 46, colW * 0.70);
+
+    // Standard LAB
+    const x1 = padding.left + colW * 0.5;
+    const h1 = (res.tcoStdTower / maxVal) * chartH;
+    const y1 = padding.top + yScale(res.tcoStdTower);
+    svg += `<rect x="${x1 - barW/2}" y="${y1}" width="${barW}" height="${h1}" fill="#475569" rx="3"/>`;
+    svg += `<text x="${x1}" y="${y1 - 5}" font-size="${isMobile ? 10 : 11}" font-weight="700" fill="#475569" text-anchor="middle">₹${Math.round(res.tcoStdTower/1000)}k</text>`;
+    svg += `<text x="${x1}" y="${height - (isMobile ? 14 : 16)}" font-size="${isMobile ? 9.5 : 11}" font-weight="600" fill="#334155" text-anchor="middle">Standard LAB</text>`;
+    svg += `<text x="${x1}" y="${height - 3}" font-size="${isMobile ? 8.5 : 9.5}" fill="#64748b" text-anchor="middle">(${state.L_std}m)</text>`;
+
+    // XL-Series
+    const x2 = padding.left + colW * 1.5;
+    const h2 = (res.tcoXlTower / maxVal) * chartH;
+    const y2 = padding.top + yScale(res.tcoXlTower);
+    svg += `<rect x="${x2 - barW/2}" y="${y2}" width="${barW}" height="${h2}" fill="#0284c7" rx="3"/>`;
+    svg += `<text x="${x2}" y="${y2 - 5}" font-size="${isMobile ? 10 : 11}" font-weight="700" fill="#0284c7" text-anchor="middle">₹${Math.round(res.tcoXlTower/1000)}k</text>`;
+    svg += `<text x="${x2}" y="${height - (isMobile ? 14 : 16)}" font-size="${isMobile ? 9.5 : 11}" font-weight="600" fill="#0284c7" text-anchor="middle">XL-Series</text>`;
+    svg += `<text x="${x2}" y="${height - 3}" font-size="${isMobile ? 8.5 : 9.5}" fill="#64748b" text-anchor="middle">(${state.L_xl}m)</text>`;
+
+    // Saving
+    const x3 = padding.left + colW * 2.5;
+    const isSaving = res.savingTower >= 0;
+    const absSaving = Math.abs(res.savingTower);
+    const h3 = (absSaving / maxVal) * chartH;
+    const y3 = padding.top + yScale(absSaving);
+    const saveColor = isSaving ? '#059669' : '#dc2626';
+
+    svg += `<rect x="${x3 - barW/2}" y="${y3}" width="${barW}" height="${h3}" fill="${saveColor}" rx="3"/>`;
+    svg += `<text x="${x3}" y="${y3 - 5}" font-size="${isMobile ? 10 : 11}" font-weight="700" fill="${saveColor}" text-anchor="middle">${isSaving ? '+' : '-'}₹${Math.round(absSaving/1000)}k</text>`;
+    svg += `<text x="${x3}" y="${height - (isMobile ? 14 : 16)}" font-size="${isMobile ? 9.5 : 11}" font-weight="600" fill="${saveColor}" text-anchor="middle">${isSaving ? 'Saving' : 'Extra Cost'}</text>`;
+    svg += `<text x="${x3}" y="${height - 3}" font-size="${isMobile ? 8.5 : 9.5}" fill="#64748b" text-anchor="middle">(${isSaving ? '-' : '+'}${Math.abs(res.savingPct).toFixed(0)}%)</text>`;
+
+    svg += `</svg>`;
+    container.innerHTML = svg;
+  }
+
+  // Chart 2: 5-Year Cumulative Outflow (Responsive for Mobile)
+  function renderCumulativeChart(res) {
+    const container = document.getElementById('chart-payback-curve');
+    if (!container) return;
+
+    const width = container.clientWidth || 360;
+    const isMobile = width < 440;
+    const height = isMobile ? 200 : 220;
+    const padding = {
+      top: 25,
+      right: isMobile ? 12 : 24,
+      bottom: isMobile ? 32 : 36,
+      left: isMobile ? 46 : 60
+    };
+
+    const chartW = width - padding.left - padding.right;
+    const chartH = height - padding.top - padding.bottom;
+
+    const months = 60;
+    const stdPts = [];
+    const xlPts = [];
+
+    let cumStd = 0;
+    let cumXl = 0;
+
+    for (let m = 0; m <= months; m++) {
+      if (m === 0) {
+        cumStd = state.N * state.P_std;
+        cumXl = state.N * state.P_xl;
+      } else {
+        if (m % state.L_std === 0) cumStd += res.costCycleStd;
+        if (m % state.L_xl === 0) cumXl += res.costCycleXl;
+      }
+      stdPts.push({ m, val: cumStd });
+      xlPts.push({ m, val: cumXl });
+    }
+
+    const maxVal = Math.max(stdPts[months].val, xlPts[months].val) * 1.15;
+    const xScale = m => padding.left + (m / months) * chartW;
+    const yScale = val => padding.top + chartH - (val / maxVal) * chartH;
+
+    let svg = `<svg class="svg-chart" viewBox="0 0 ${width} ${height}">`;
+
+    for (let i = 0; i <= 4; i++) {
+      const v = (maxVal / 4) * i;
+      const y = yScale(v);
+      svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="3 3"/>`;
+      svg += `<text x="${padding.left - 6}" y="${y + 4}" font-size="${isMobile ? 9 : 10}" fill="#64748b" text-anchor="end">₹${Math.round(v/1000)}k</text>`;
+    }
+
+    for (let yr = 0; yr <= 5; yr++) {
+      const m = yr * 12;
+      const x = xScale(m);
+      svg += `<line x1="${x}" y1="${padding.top + chartH}" x2="${x}" y2="${padding.top + chartH + 4}" stroke="#cbd5e1"/>`;
+      svg += `<text x="${x}" y="${padding.top + chartH + (isMobile ? 14 : 16)}" font-size="${isMobile ? 9 : 10}" fill="#64748b" text-anchor="middle">Y${yr}</text>`;
+    }
+
+    // Standard LAB Line (#475569)
+    let dStd = `M ${xScale(0)} ${yScale(stdPts[0].val)}`;
+    for (let i = 1; i < stdPts.length; i++) {
+      dStd += ` L ${xScale(stdPts[i].m)} ${yScale(stdPts[i-1].val)} L ${xScale(stdPts[i].m)} ${yScale(stdPts[i].val)}`;
+    }
+    svg += `<path d="${dStd}" fill="none" stroke="#475569" stroke-width="2" stroke-linejoin="round"/>`;
+
+    // XL-Series Line (#0284c7)
+    let dXl = `M ${xScale(0)} ${yScale(xlPts[0].val)}`;
+    for (let i = 1; i < xlPts.length; i++) {
+      dXl += ` L ${xScale(xlPts[i].m)} ${yScale(xlPts[i-1].val)} L ${xScale(xlPts[i].m)} ${yScale(xlPts[i].val)}`;
+    }
+    svg += `<path d="${dXl}" fill="none" stroke="#0284c7" stroke-width="2" stroke-linejoin="round"/>`;
+
+    // Break-even Marker (#d97706)
+    if (res.paybackMonths && res.paybackMonths <= months) {
+      const pbX = xScale(res.paybackMonths);
+      const pbY = yScale(res.initialCapexStdTower + (res.paybackMonths/12)*res.tcoStdTower);
+      svg += `<line x1="${pbX}" y1="${padding.top}" x2="${pbX}" y2="${padding.top + chartH}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+      svg += `<circle cx="${pbX}" cy="${pbY}" r="4" fill="#d97706" stroke="#ffffff" stroke-width="1.5"/>`;
+      svg += `<text x="${Math.min(pbX + 4, width - (isMobile ? 70 : 85))}" y="${pbY - 6}" font-size="${isMobile ? 8.5 : 9.5}" font-weight="700" fill="#b45309">Break-even: ${res.paybackMonths.toFixed(1)}m</text>`;
+    }
+
+    const endDiff = stdPts[months].val - xlPts[months].val;
+    const endX = xScale(months);
+    const endY = (yScale(stdPts[months].val) + yScale(xlPts[months].val)) / 2;
+    if (endDiff > 0) {
+      svg += `<text x="${endX - 4}" y="${endY}" font-size="${isMobile ? 8.5 : 9.5}" font-weight="700" fill="#059669" text-anchor="end">5-Yr: +${formatINR(endDiff)}</text>`;
+    }
+
+    svg += `</svg>`;
+    container.innerHTML = svg;
+  }
+
+  // Chart 3: Crossover Curve (Responsive for Mobile)
+  function renderCrossoverChart(res) {
+    const container = document.getElementById('chart-crossover-curve');
+    if (!container) return;
+
+    const width = container.clientWidth || 360;
+    const isMobile = width < 440;
+    const height = isMobile ? 190 : 210;
+    const padding = {
+      top: 25,
+      right: isMobile ? 12 : 24,
+      bottom: isMobile ? 32 : 36,
+      left: isMobile ? 46 : 60
+    };
+
+    const chartW = width - padding.left - padding.right;
+    const chartH = height - padding.top - padding.bottom;
+
+    const minLife = 18;
+    const maxLife = 60;
+    const pts = [];
+
+    let minTco = res.tcoStdTower;
+    let maxTco = res.tcoStdTower;
+
+    for (let l = minLife; l <= maxLife; l += 1) {
+      const freq = 12 / l;
+      const tco = freq * res.costCycleXl;
+      pts.push({ l, tco });
+      if (tco > maxTco) maxTco = tco;
+      if (tco < minTco) minTco = tco;
+    }
+
+    const yMax = Math.max(maxTco, res.tcoStdTower * 1.35);
+    const yMin = Math.min(minTco, res.tcoStdTower * 0.5);
+
+    const xScale = l => padding.left + ((l - minLife) / (maxLife - minLife)) * chartW;
+    const yScale = val => padding.top + chartH - ((val - yMin) / (yMax - yMin)) * chartH;
+
+    let svg = `<svg class="svg-chart" viewBox="0 0 ${width} ${height}">`;
+
+    const beLife = res.breakEvenXlLife;
+    if (beLife >= minLife && beLife <= maxLife) {
+      const beX = xScale(beLife);
+      svg += `<rect x="${padding.left}" y="${padding.top}" width="${beX - padding.left}" height="${chartH}" fill="#fee2e2" opacity="0.3"/>`;
+      svg += `<rect x="${beX}" y="${padding.top}" width="${padding.left + chartW - beX}" height="${chartH}" fill="#d1fae5" opacity="0.3"/>`;
+    }
+
+    for (let i = 0; i <= 4; i++) {
+      const v = yMin + ((yMax - yMin) / 4) * i;
+      const y = yScale(v);
+      svg += `<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="3 3"/>`;
+      svg += `<text x="${padding.left - 6}" y="${y + 4}" font-size="${isMobile ? 9 : 10}" fill="#64748b" text-anchor="end">₹${Math.round(v/1000)}k</text>`;
+    }
+
+    for (let l = 20; l <= 60; l += 10) {
+      const x = xScale(l);
+      svg += `<line x1="${x}" y1="${padding.top + chartH}" x2="${x}" y2="${padding.top + chartH + 4}" stroke="#cbd5e1"/>`;
+      svg += `<text x="${x}" y="${padding.top + chartH + (isMobile ? 14 : 16)}" font-size="${isMobile ? 9 : 10}" fill="#64748b" text-anchor="middle">${l}m</text>`;
+    }
+
+    const stdY = yScale(res.tcoStdTower);
+    svg += `<line x1="${padding.left}" y1="${stdY}" x2="${width - padding.right}" y2="${stdY}" stroke="#475569" stroke-width="2" stroke-dasharray="4 3"/>`;
+    svg += `<text x="${width - padding.right - 4}" y="${stdY - 5}" font-size="${isMobile ? 9 : 10}" font-weight="700" fill="#475569" text-anchor="end">${isMobile ? 'Std' : 'Standard LAB'}: ${formatINR(res.tcoStdTower)}</text>`;
+
+    let dCurve = `M ${xScale(pts[0].l)} ${yScale(pts[0].tco)}`;
+    for (let i = 1; i < pts.length; i++) {
+      dCurve += ` L ${xScale(pts[i].l)} ${yScale(pts[i].tco)}`;
+    }
+    svg += `<path d="${dCurve}" fill="none" stroke="#0284c7" stroke-width="2"/>`;
+
+    if (beLife >= minLife && beLife <= maxLife) {
+      const beX = xScale(beLife);
+      svg += `<circle cx="${beX}" cy="${stdY}" r="4" fill="#d97706" stroke="#ffffff" stroke-width="1.5"/>`;
+      svg += `<text x="${beX}" y="${stdY + 14}" font-size="${isMobile ? 8.5 : 9.5}" font-weight="700" fill="#b45309" text-anchor="middle">Break-Even: ${beLife.toFixed(1)}m</text>`;
+    }
+
+    if (state.L_xl >= minLife && state.L_xl <= maxLife) {
+      const currX = xScale(state.L_xl);
+      const currY = yScale(res.tcoXlTower);
+      svg += `<circle cx="${currX}" cy="${currY}" r="4.5" fill="#059669" stroke="#ffffff" stroke-width="1.5"/>`;
+      svg += `<text x="${currX}" y="${currY - 8}" font-size="${isMobile ? 8.5 : 9.5}" font-weight="700" fill="#059669" text-anchor="middle">Base (${state.L_xl}m)</text>`;
+    }
+
+    svg += `</svg>`;
+    container.innerHTML = svg;
+  }
+
+  // Dynamic Heatmap Grids
+  function getHeatClass(saving) {
+    if (saving >= 20000) return 'heat-deep-pos';
+    if (saving >= 10000) return 'heat-med-pos';
+    if (saving >= 2000)  return 'heat-low-pos';
+    if (saving > 0)      return 'heat-sub-pos';
+    if (saving === 0)    return 'heat-neutral';
+    if (saving > -4000)  return 'heat-low-neg';
+    if (saving > -10000) return 'heat-med-neg';
+    return 'heat-deep-neg';
+  }
+
+  function renderSensitivityGrids() {
+    const g1L = [24, 30, 36, 42, 48, 54, 60];
+    const g1N = [4, 5, 6, 7, 8];
+    const tbody1 = document.getElementById('heatmap1-body');
+    if (tbody1) {
+      let h1 = '';
+      g1L.forEach(l => {
+        h1 += `<tr><th class="axis-label">${l} months</th>`;
+        g1N.forEach(n => {
+          const testParams = { ...state, L_xl: l, N: n };
+          const r = calculateModel(testParams);
+          const heatClass = getHeatClass(r.savingTower);
+          const isMarker = (l === state.L_xl && n === state.N) ? 'heat-active-marker' : '';
+          h1 += `<td class="${heatClass} ${isMarker}">${formatINR(r.savingTower)}</td>`;
+        });
+        h1 += `</tr>`;
+      });
+      tbody1.innerHTML = h1;
+    }
+
+    const g2P = [15000, 16000, 17200, 18500, 20000, 22000, 25000];
+    const tbody2 = document.getElementById('heatmap2-body');
+    if (tbody2) {
+      let h2 = '';
+      g1L.forEach(l => {
+        h2 += `<tr><th class="axis-label">${l} months</th>`;
+        g2P.forEach(p => {
+          const testParams = { ...state, L_xl: l, P_xl: p };
+          const r = calculateModel(testParams);
+          const heatClass = getHeatClass(r.savingTower);
+          const isMarker = (l === state.L_xl && p === state.P_xl) ? 'heat-active-marker' : '';
+          h2 += `<td class="${heatClass} ${isMarker}">${formatINR(r.savingTower)}</td>`;
+        });
+        h2 += `</tr>`;
+      });
+      tbody2.innerHTML = h2;
+    }
+
+    const g3StdL = [18, 20, 22, 24, 26];
+    const g3XlL = [24, 30, 36, 42, 48, 54];
+    const tbody3 = document.getElementById('heatmap3-body');
+    if (tbody3) {
+      let h3 = '';
+      g3StdL.forEach(sl => {
+        h3 += `<tr><th class="axis-label">${sl} months</th>`;
+        g3XlL.forEach(xl => {
+          const testParams = { ...state, L_std: sl, L_xl: xl };
+          const r = calculateModel(testParams);
+          const heatClass = getHeatClass(r.savingTower);
+          const isMarker = (sl === state.L_std && xl === state.L_xl) ? 'heat-active-marker' : '';
+          h3 += `<td class="${heatClass} ${isMarker}">${formatINR(r.savingTower)}</td>`;
+        });
+        h3 += `</tr>`;
+      });
+      tbody3.innerHTML = h3;
+    }
+  }
+
+  // Update Scenario Outer Bounds Table
+  function updateScenarioTable() {
+    const pess = calculateModel(presets.pessimistic);
+    const base = calculateModel(presets.base);
+    const opt = calculateModel(presets.optimistic);
+    const curr = calculateModel(state);
+
+    const setCell = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+
+    setCell('scen-pess-tco-std', formatINR(pess.tcoStdTower));
+    setCell('scen-base-tco-std', formatINR(base.tcoStdTower));
+    setCell('scen-opt-tco-std', formatINR(opt.tcoStdTower));
+    setCell('scen-curr-tco-std', formatINR(curr.tcoStdTower));
+
+    setCell('scen-pess-tco-xl', formatINR(pess.tcoXlTower));
+    setCell('scen-base-tco-xl', formatINR(base.tcoXlTower));
+    setCell('scen-opt-tco-xl', formatINR(opt.tcoXlTower));
+    setCell('scen-curr-tco-xl', formatINR(curr.tcoXlTower));
+
+    setCell('scen-pess-sav-twr', formatINR(pess.savingTower));
+    setCell('scen-base-sav-twr', formatINR(base.savingTower));
+    setCell('scen-opt-sav-twr', formatINR(opt.savingTower));
+    setCell('scen-curr-sav-twr', formatINR(curr.savingTower));
+
+    setCell('scen-pess-sav-flt', formatCr(pess.savingFleetCr));
+    setCell('scen-base-sav-flt', formatCr(base.savingFleetCr));
+    setCell('scen-opt-sav-flt', formatCr(opt.savingFleetCr));
+    setCell('scen-curr-sav-flt', formatCr(curr.savingFleetCr));
+
+    setCell('scen-pess-capex', `+₹${pess.extraCapexFleetCr.toFixed(2)} Cr`);
+    setCell('scen-base-capex', `+₹${base.extraCapexFleetCr.toFixed(2)} Cr`);
+    setCell('scen-opt-capex', `+₹${opt.extraCapexFleetCr.toFixed(2)} Cr`);
+    setCell('scen-curr-capex', `+₹${curr.extraCapexFleetCr.toFixed(2)} Cr`);
+
+    setCell('scen-pess-be', `${pess.breakEvenXlLife.toFixed(1)} mos`);
+    setCell('scen-base-be', `${base.breakEvenXlLife.toFixed(1)} mos`);
+    setCell('scen-opt-be', `${opt.breakEvenXlLife.toFixed(1)} mos`);
+    setCell('scen-curr-be', `${curr.breakEvenXlLife.toFixed(1)} mos`);
+
+    setCell('scen-pess-verdict', pess.savingTower > 0 ? 'XL Cheaper' : 'Standard Cheaper');
+    setCell('scen-base-verdict', base.savingTower > 0 ? 'XL Cheaper' : 'Standard Cheaper');
+    setCell('scen-opt-verdict', opt.savingTower > 0 ? 'XL Cheaper' : 'Standard Cheaper');
+    setCell('scen-curr-verdict', curr.savingTower > 0 ? 'XL Cheaper' : 'Standard Cheaper');
+  }
+
+  // Event Listeners
+  function bindEvents() {
+    const inputs = [
+      { id: 'input-t', key: 'T', isInt: true },
+      { id: 'input-n', key: 'N', isInt: true },
+      { id: 'input-p-std', key: 'P_std', isInt: true },
+      { id: 'input-p-xl', key: 'P_xl', isInt: true },
+      { id: 'input-life-std', key: 'L_std', isInt: true },
+      { id: 'input-life-xl', key: 'L_xl', isInt: true },
+      { id: 'input-c-visit', key: 'C_visit', isInt: true },
+      { id: 'input-s', key: 'S', isInt: true }
+    ];
+
+    inputs.forEach(item => {
+      const slider = document.getElementById(item.id + '-range');
+      const numInput = document.getElementById(item.id + '-num');
+
+      const syncVal = val => {
+        let parsed = item.isInt ? parseInt(val, 10) : parseFloat(val);
+        if (isNaN(parsed)) return;
+        state[item.key] = parsed;
+        if (slider) slider.value = parsed;
+        if (numInput) numInput.value = parsed;
+        deactivatePresetButtons();
+        updateUI();
+      };
+
+      if (slider) slider.addEventListener('input', e => syncVal(e.target.value));
+      if (numInput) numInput.addEventListener('change', e => syncVal(e.target.value));
+    });
+
+    // Scrap Toggle
+    const scrapToggle = document.getElementById('toggle-scrap');
+    if (scrapToggle) {
+      scrapToggle.addEventListener('change', e => {
+        state.F_scrap = e.target.checked ? 1 : 0;
+        deactivatePresetButtons();
+        updateUI();
+      });
+    }
+
+    // Preset Buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pKey = btn.getAttribute('data-preset');
+        if (presets[pKey]) applyPreset(pKey);
+      });
+    });
+
+    // Reset Button
+    const resetBtn = document.getElementById('btn-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => applyPreset('base'));
+    }
+
+    // Tab Navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-tab');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const content = document.getElementById(targetId);
+        if (content) content.classList.add('active');
+
+        // Hide presets bar when viewing assumptions tab
+        const presetBar = document.getElementById('preset-bar');
+        if (presetBar) {
+          presetBar.style.display = (targetId === 'tab-assumptions') ? 'none' : 'block';
+        }
+
+        setTimeout(updateUI, 50);
+      });
+    });
+
+    // CSV Download
+    const csvBtn = document.getElementById('btn-export-csv');
+    if (csvBtn) {
+      csvBtn.addEventListener('click', exportCSV);
+    }
+
+    // Print
+    const printBtn = document.getElementById('btn-print');
+    if (printBtn) {
+      printBtn.addEventListener('click', () => window.print());
+    }
+
+    // Resize
+    window.addEventListener('resize', () => {
+      const res = calculateModel(state);
+      renderBarChart(res);
+      renderCumulativeChart(res);
+      renderCrossoverChart(res);
+    });
+  }
+
+  function deactivatePresetButtons() {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  }
+
+  function applyPreset(pKey) {
+    const p = presets[pKey];
+    if (!p) return;
+    Object.assign(state, p);
+
+    const syncPair = (id, val) => {
+      const s = document.getElementById(id + '-range');
+      const n = document.getElementById(id + '-num');
+      if (s) s.value = val;
+      if (n) n.value = val;
+    };
+
+    syncPair('input-t', state.T);
+    syncPair('input-n', state.N);
+    syncPair('input-p-std', state.P_std);
+    syncPair('input-p-xl', state.P_xl);
+    syncPair('input-life-std', state.L_std);
+    syncPair('input-life-xl', state.L_xl);
+    syncPair('input-c-visit', state.C_visit);
+    syncPair('input-s', state.S);
+
+    const scrapToggle = document.getElementById('toggle-scrap');
+    if (scrapToggle) scrapToggle.checked = state.F_scrap === 1;
+
+    document.querySelectorAll('.preset-btn').forEach(b => {
+      if (b.getAttribute('data-preset') === pKey) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+
+    updateUI();
+  }
+
+  function exportCSV() {
+    const res = calculateModel(state);
+    let csv = 'CHAI Telecom Tower Battery TCO Model - Export\n';
+    csv += `Date,${new Date().toISOString().split('T')[0]}\n`;
+    csv += `Towers in Scope,${state.T}\n\n`;
+
+    csv += 'Assumption,Value,Unit\n';
+    csv += `Batteries per Tower (N),${state.N},units\n`;
+    csv += `Standard LAB Unit Price,${state.P_std},INR\n`;
+    csv += `XL-Series Unit Price,${state.P_xl},INR\n`;
+    csv += `Standard Battery Lifespan,${state.L_std},months\n`;
+    csv += `XL-Series Battery Lifespan,${state.L_xl},months\n`;
+    csv += `Replacement Visit Cost,${state.C_visit},INR\n`;
+    csv += `Scrap Value per Battery,${state.S},INR\n`;
+    csv += `Include Scrap Credit,${state.F_scrap === 1 ? 'Yes' : 'No'},flag\n\n`;
+
+    csv += 'Financial Outputs,Standard LAB,XL-Series,Delta\n';
+    csv += `Cost per Replacement Cycle (INR),${res.costCycleStd},${res.costCycleXl},${res.costCycleXl - res.costCycleStd}\n`;
+    csv += `Replacement Cycles per Year,${res.freqStd.toFixed(3)},${res.freqXl.toFixed(3)},${(res.freqXl - res.freqStd).toFixed(3)}\n`;
+    csv += `Annual Cost per Tower (INR),${res.tcoStdTower.toFixed(2)},${res.tcoXlTower.toFixed(2)},${res.savingTower.toFixed(2)}\n`;
+    csv += `Annual Cost Fleet (INR Cr),${res.tcoStdFleetCr.toFixed(2)},${res.tcoXlFleetCr.toFixed(2)},${res.savingFleetCr.toFixed(2)}\n`;
+    csv += `Year-1 Capex per Tower (INR),${res.initialCapexStdTower},${res.initialCapexXlTower},${res.extraCapexTower}\n`;
+    csv += `Year-1 Extra Capex Fleet (INR Cr),-,${res.extraCapexFleetCr.toFixed(2)},-\n\n`;
+
+    csv += 'Breakeven Analytics,Value,Unit\n';
+    csv += `CAPEX Breakeven Payback Period,${res.paybackMonths ? res.paybackMonths.toFixed(1) : 'N/A'},months\n`;
+    csv += `Overall Expenditure Breakeven Lifespan,${res.breakEvenXlLife.toFixed(2)},months\n`;
+    csv += `Overall Expenditure Breakeven Price,${res.breakEvenXlPrice.toFixed(2)},INR\n`;
+    csv += `Maximum Allowable Price Premium,${res.maxAbsorbedPremiumPct.toFixed(2)},%\n`;
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `CHAI_Battery_TCO_Model_${state.T}_towers.csv`;
+    link.click();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    bindEvents();
+    applyPreset('base');
+  });
+
+})();
+
+</script>
+</body>
+</html>
